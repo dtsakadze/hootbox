@@ -32,7 +32,7 @@ function LoginPage() {
 		<AuthLayout title="Welcome back" subtitle="Your feedback missed you.">
 			<form onSubmit={form.onSubmit} className="space-y-4">
 				<ErrorNote>{form.error}</ErrorNote>
-				<Field label="Email">{(id) => <input id={id} name="email" type="email" className="input" required autoComplete="email" autoFocus />}</Field>
+				<Field label="Email">{(id) => <input id={id} name="email" type="email" className="input" required autoComplete="email" />}</Field>
 				<Field label="Password">
 					{(id) => <input id={id} name="password" type="password" className="input" required autoComplete="current-password" />}
 				</Field>

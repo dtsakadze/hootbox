@@ -23,7 +23,7 @@ export function ErrorPage({ error, reset }: ErrorComponentProps) {
 			<div className="card max-w-md p-10 text-center animate-pop-in">
 				<Owl size={96} mood="curious" color="tomato" className="mx-auto" />
 				<h1 className="mt-4 text-3xl font-extrabold">Oops, a hiccup</h1>
-				<p className="mt-2 text-ink-soft">{error?.message || "Something went wrong."}</p>
+				<p className="mt-2 text-ink-soft">{(error as Error | undefined)?.message || "Something went wrong."}</p>
 				<button
 					type="button"
 					className="btn btn-ink mt-6"

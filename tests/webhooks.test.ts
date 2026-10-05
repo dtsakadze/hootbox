@@ -37,12 +37,20 @@ describe("webhooks", () => {
 		const { project, actor } = await seedProject();
 		const p = await updateProject(actor, project.id, { webhookUrl: url });
 		received.length = 0;
-		const item = await submitFeedback(p, { message: "Webhook me", type: "bug" }, { source: "widget", ip: "3.3.3.3", appUrl: "https://hb.test" });
+		const item = await submitFeedback(
+			p,
+			{ message: "Webhook me", type: "bug" },
+			{ source: "widget", ip: "3.3.3.3", appUrl: "https://hb.test" },
+		);
 
 		expect(received).toHaveLength(1);
 		const { headers, body } = received[0];
 		const json = JSON.parse(body);
-		expect(json).toMatchObject({ event: "feedback.created", feedback: { id: item!.id, message: "Webhook me" }, url: `https://hb.test/app/p/${p.id}?id=${item!.id}` });
+		expect(json).toMatchObject({
+			event: "feedback.created",
+			feedback: { id: item?.id, message: "Webhook me" },
+			url: `https://hb.test/app/p/${p.id}?id=${item?.id}`,
+		});
 		const expected = await hmacSha256Hex(p.webhookSecret, `${headers["x-hootbox-timestamp"]}.${body}`);
 		expect(headers["x-hootbox-signature"]).toBe(`sha256=${expected}`);
 	});
@@ -59,10 +67,20 @@ describe("webhooks", () => {
 
 	it("formats Slack and Discord messages", async () => {
 		const { project } = await seedProject("Shop");
-		const item = { id: "f1", number: 7, type: "idea", title: null, message: "Add @everyone ping", authorEmail: "a@b.c", authorName: null } as never;
+		const item = {
+			id: "f1",
+			number: 7,
+			type: "idea",
+			title: null,
+			message: "Add @everyone ping",
+			authorEmail: "a@b.c",
+			authorName: null,
+		} as never;
 		const slack = buildWebhookBody({ ...project, webhookUrl: "https://hooks.slack.com/services/x" }, item) as { text: string };
 		expect(slack.text).toContain("New idea #7 in Shop");
-		const discord = buildWebhookBody({ ...project, webhookUrl: "https://discord.com/api/webhooks/1/x" }, item) as { allowed_mentions: unknown };
+		const discord = buildWebhookBody({ ...project, webhookUrl: "https://discord.com/api/webhooks/1/x" }, item) as {
+			allowed_mentions: unknown;
+		};
 		expect(discord.allowed_mentions).toEqual({ parse: [] });
 	});
 });

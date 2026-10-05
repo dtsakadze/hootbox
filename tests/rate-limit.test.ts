@@ -14,7 +14,10 @@ describe("rate limiter", () => {
 
 	it("resets after the window", async () => {
 		for (let i = 0; i < 3; i++) await hitRateLimit("t:3", 2, 60);
-		await getDb().update(rateLimits).set({ resetAt: new Date(Date.now() - 1000) }).where(eq(rateLimits.key, "t:3"));
+		await getDb()
+			.update(rateLimits)
+			.set({ resetAt: new Date(Date.now() - 1000) })
+			.where(eq(rateLimits.key, "t:3"));
 		expect(await hitRateLimit("t:3", 2, 60)).toBe(true);
 	});
 

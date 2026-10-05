@@ -30,14 +30,8 @@ export async function setupInstance(input: z.output<typeof setupSchema>) {
 		const [existing] = await tx.select({ id: users.id }).from(users).limit(1);
 		if (existing) throw new AppError("FORBIDDEN", "This Hootbox is already set up. Please log in.");
 
-		const [user] = await tx
-			.insert(users)
-			.values({ id: newId(), email: input.email, name: input.name, passwordHash })
-			.returning();
-		const [workspace] = await tx
-			.insert(workspaces)
-			.values({ id: newId(), name: input.workspaceName })
-			.returning();
+		const [user] = await tx.insert(users).values({ id: newId(), email: input.email, name: input.name, passwordHash }).returning();
+		const [workspace] = await tx.insert(workspaces).values({ id: newId(), name: input.workspaceName }).returning();
 		await tx.insert(workspaceMembers).values({ workspaceId: workspace.id, userId: user.id, role: "owner" });
 		return { user: toPublicUser(user), workspace };
 	});
@@ -117,12 +111,7 @@ export async function updateProfile(userId: string, input: { name: string; email
 }
 
 /** Changes the password and signs out every other session. */
-export async function changePassword(
-	userId: string,
-	currentPassword: string,
-	newPassword: string,
-	keepSessionToken?: string,
-) {
+export async function changePassword(userId: string, currentPassword: string, newPassword: string, keepSessionToken?: string) {
 	const db = getDb();
 	const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 	if (!user || !(await verifyPassword(currentPassword, user.passwordHash))) {

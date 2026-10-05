@@ -22,9 +22,9 @@ describe("setup", () => {
 		const { user, workspace } = await seedOwner();
 		expect(await isSetupComplete()).toBe(true);
 		expect(await getMembership(user.id)).toMatchObject({ role: "owner", workspace: { id: workspace.id } });
-		await expect(
-			setupInstance({ name: "Eve", email: "eve@example.com", password: "password123", workspaceName: "Evil" }),
-		).rejects.toThrow(/already set up/);
+		await expect(setupInstance({ name: "Eve", email: "eve@example.com", password: "password123", workspaceName: "Evil" })).rejects.toThrow(
+			/already set up/,
+		);
 	});
 
 	it("survives racing setups", async () => {
@@ -64,12 +64,18 @@ describe("sessions", () => {
 		const { token } = await createSession(user.id);
 		const id = await sha256(token);
 
-		await getDb().update(sessions).set({ expiresAt: new Date(Date.now() + 86_400_000) }).where(eq(sessions.id, id));
+		await getDb()
+			.update(sessions)
+			.set({ expiresAt: new Date(Date.now() + 86_400_000) })
+			.where(eq(sessions.id, id));
 		const renewed = await validateSession(token);
 		expect(renewed?.renewed).toBe(true);
-		expect(renewed!.expiresAt.getTime()).toBeGreaterThan(Date.now() + 20 * 86_400_000);
+		expect(renewed?.expiresAt.getTime()).toBeGreaterThan(Date.now() + 20 * 86_400_000);
 
-		await getDb().update(sessions).set({ expiresAt: new Date(Date.now() - 1000) }).where(eq(sessions.id, id));
+		await getDb()
+			.update(sessions)
+			.set({ expiresAt: new Date(Date.now() - 1000) })
+			.where(eq(sessions.id, id));
 		expect(await validateSession(token)).toBeNull();
 	});
 

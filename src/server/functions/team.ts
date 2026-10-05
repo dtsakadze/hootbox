@@ -3,6 +3,7 @@ import { z } from "zod";
 import { roleSchema } from "#/lib/validation";
 import { appUrl } from "../http";
 import {
+	assertRole,
 	createInvite,
 	listMembers,
 	listPendingInvites,
@@ -10,7 +11,6 @@ import {
 	renameWorkspace,
 	revokeInvite,
 	updateMemberRole,
-	assertRole,
 } from "../services/workspaces";
 import { authMiddleware } from "./middleware";
 import { validate } from "./validate";
@@ -19,10 +19,7 @@ export const getTeamFn = createServerFn({ method: "GET" })
 	.middleware([authMiddleware])
 	.handler(async ({ context }) => {
 		const { workspace, role, user } = context.auth;
-		const [members, invites] = await Promise.all([
-			listMembers(workspace.id),
-			role === "member" ? [] : listPendingInvites(workspace.id),
-		]);
+		const [members, invites] = await Promise.all([listMembers(workspace.id), role === "member" ? [] : listPendingInvites(workspace.id)]);
 		return { workspace: { id: workspace.id, name: workspace.name }, members, invites, role, me: user.id };
 	});
 

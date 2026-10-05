@@ -31,7 +31,9 @@ function AppLayout() {
 					<Menu className="size-5" />
 				</button>
 			</header>
-			{open && <button type="button" aria-label="Close menu" className="lg:hidden fixed inset-0 z-40 bg-ink/30" onClick={() => setOpen(false)} />}
+			{open && (
+				<button type="button" aria-label="Close menu" className="lg:hidden fixed inset-0 z-40 bg-ink/30" onClick={() => setOpen(false)} />
+			)}
 			<aside
 				className={`fixed inset-y-0 left-0 z-50 w-[272px] transition-transform lg:sticky lg:top-0 lg:h-dvh lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
 			>
@@ -88,28 +90,46 @@ function Sidebar({ onNavigate }: { onNavigate: () => void }) {
 								<span className={`size-3.5 shrink-0 rounded-full border-2 border-ink ${colorMeta(p.color).bg}`} />
 								<span className="truncate flex-1">{p.name}</span>
 								{p.newCount > 0 && (
-									<span className="rounded-full border-2 border-ink bg-sunny px-1.5 text-[11px] font-extrabold leading-4">{p.newCount > 99 ? "99+" : p.newCount}</span>
+									<span className="rounded-full border-2 border-ink bg-sunny px-1.5 text-[11px] font-extrabold leading-4">
+										{p.newCount > 99 ? "99+" : p.newCount}
+									</span>
 								)}
 							</Link>
 						</li>
 					))}
 				</ul>
 				{role !== "member" && (
-					<Link to="/app/new" onClick={onNavigate} className="mt-2 flex items-center gap-2 rounded-2xl px-2.5 py-2 text-sm font-extrabold text-ink-soft hover:bg-fog hover:text-ink">
+					<Link
+						to="/app/new"
+						onClick={onNavigate}
+						className="mt-2 flex items-center gap-2 rounded-2xl px-2.5 py-2 text-sm font-extrabold text-ink-soft hover:bg-fog hover:text-ink"
+					>
 						<Plus className="size-4" /> New project
 					</Link>
 				)}
 			</div>
 
 			<div className="space-y-1 border-t-2 border-dashed border-ink/15 pt-4">
-				<Link to="/app/team" onClick={onNavigate} className="flex items-center gap-2.5 rounded-2xl px-2.5 py-2 font-bold hover:bg-fog" activeProps={{ className: "bg-fog" }}>
+				<Link
+					to="/app/team"
+					onClick={onNavigate}
+					className="flex items-center gap-2.5 rounded-2xl px-2.5 py-2 font-bold hover:bg-fog"
+					activeProps={{ className: "bg-fog" }}
+				>
 					<UsersRound className="size-4" /> Team
 				</Link>
-				<Link to="/app/account" onClick={onNavigate} className="flex items-center gap-2.5 rounded-2xl px-2.5 py-2 font-bold hover:bg-fog" activeProps={{ className: "bg-fog" }}>
+				<Link
+					to="/app/account"
+					onClick={onNavigate}
+					className="flex items-center gap-2.5 rounded-2xl px-2.5 py-2 font-bold hover:bg-fog"
+					activeProps={{ className: "bg-fog" }}
+				>
 					<UserRound className="size-4" /> Account
 				</Link>
 				<div className="flex items-center gap-2.5 px-2.5 pt-3">
-					<span className="grid size-9 shrink-0 place-items-center rounded-full border-2 border-ink bg-bubblegum text-xs font-extrabold">{initials(user.name)}</span>
+					<span className="grid size-9 shrink-0 place-items-center rounded-full border-2 border-ink bg-bubblegum text-xs font-extrabold">
+						{initials(user.name)}
+					</span>
 					<div className="min-w-0 flex-1">
 						<p className="truncate text-sm font-extrabold">{user.name}</p>
 						<p className="truncate text-xs text-ink-soft">{user.email}</p>

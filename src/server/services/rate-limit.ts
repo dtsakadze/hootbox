@@ -7,11 +7,7 @@ import { AppError } from "../lib/errors";
  * Fixed-window rate limiter backed by Postgres so it holds across serverless
  * instances. Returns true when the call is allowed.
  */
-export async function hitRateLimit(
-	key: string,
-	limit: number,
-	windowSeconds: number,
-): Promise<boolean> {
+export async function hitRateLimit(key: string, limit: number, windowSeconds: number): Promise<boolean> {
 	const db = getDb();
 	const [row] = await db
 		.insert(rateLimits)

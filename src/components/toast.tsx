@@ -15,14 +15,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 		setToasts((t) => [...t.slice(-3), { id, kind, message }]);
 		setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), kind === "error" ? 6000 : 3000);
 	}, []);
-	const api = useMemo<ToastApi>(
-		() => ({ success: (m) => push("success", m), error: (m) => push("error", m) }),
-		[push],
-	);
+	const api = useMemo<ToastApi>(() => ({ success: (m) => push("success", m), error: (m) => push("error", m) }), [push]);
 	return (
 		<ToastContext.Provider value={api}>
 			{children}
-			<div aria-live="polite" className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-2 pointer-events-none">
+			<div
+				aria-live="polite"
+				className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-2 pointer-events-none"
+			>
 				{toasts.map((t) => (
 					<div
 						key={t.id}

@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { submitFeedbackSchema } from "#/lib/validation";
+import type { submitFeedbackSchema } from "#/lib/validation";
 import { requestMeta, voterId } from "../http";
 import { sha256 } from "../lib/crypto";
-import { notFound } from "../lib/errors";
+import { AppError, notFound } from "../lib/errors";
 import { listPublicPosts, submitFeedback, toggleVote } from "../services/feedback";
 import { getProjectBySlug } from "../services/projects";
 import { enforceRateLimit } from "../services/rate-limit";
@@ -64,5 +64,6 @@ export const voteFn = createServerFn({ method: "POST" })
 		const { ip } = requestMeta();
 		await enforceRateLimit(`vote:${await sha256(ip ?? "unknown")}`, 60, 600);
 		const voter = await voterId(true);
-		return toggleVote(project.id, data.feedbackId, voter!);
+		if (!voter) throw new AppError("BAD_REQUEST", "Couldn't record your vote. Are cookies enabled?");
+		return toggleVote(project.id, data.feedbackId, voter);
 	});

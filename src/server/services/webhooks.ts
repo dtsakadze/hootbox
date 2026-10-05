@@ -20,7 +20,9 @@ export function buildWebhookBody(project: Project, item: WebhookFeedback, appUrl
 	const heading = `${TYPE_EMOJI[item.type] ?? "💬"} New ${item.type} #${item.number} in ${project.name}`;
 
 	if (kind === "slack") {
-		return { text: `*${heading}*\n${item.title ? `*${item.title}*\n` : ""}${excerpt}\n— ${who}${link ? `\n<${link}|Open in Hootbox>` : ""}` };
+		return {
+			text: `*${heading}*\n${item.title ? `*${item.title}*\n` : ""}${excerpt}\n— ${who}${link ? `\n<${link}|Open in Hootbox>` : ""}`,
+		};
 	}
 	if (kind === "discord") {
 		return {

@@ -2,7 +2,17 @@ import type { ReactNode } from "react";
 import { REPO_URL } from "#/lib/constants-app";
 import { Logo, Owl } from "./Owl";
 
-export function AuthLayout({ title, subtitle, children, color = "violet" }: { title: ReactNode; subtitle?: ReactNode; children: ReactNode; color?: string }) {
+export function AuthLayout({
+	title,
+	subtitle,
+	children,
+	color = "violet",
+}: {
+	title: ReactNode;
+	subtitle?: ReactNode;
+	children: ReactNode;
+	color?: string;
+}) {
 	return (
 		<main className="min-h-dvh flex flex-col items-center justify-center px-4 py-10">
 			<Logo className="mb-6" />

@@ -1,14 +1,7 @@
 export const FEEDBACK_TYPES = ["idea", "bug", "praise", "question", "other"] as const;
 export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
 
-export const FEEDBACK_STATUSES = [
-	"new",
-	"reviewing",
-	"planned",
-	"in_progress",
-	"done",
-	"closed",
-] as const;
+export const FEEDBACK_STATUSES = ["new", "reviewing", "planned", "in_progress", "done", "closed"] as const;
 export type FeedbackStatus = (typeof FEEDBACK_STATUSES)[number];
 
 /** Statuses that count as "still needs attention". */

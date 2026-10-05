@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { SubmitFeedbackInput } from "#/lib/validation";
 import { CORS_HEADERS, errorResponse, json, readJsonBody } from "#/server/api";
 import { requestMeta } from "#/server/http";
 import { AppError } from "#/server/lib/errors";
@@ -21,7 +22,8 @@ export const Route = createFileRoute("/api/v1/feedback")({
 					if (!project) throw new AppError("NOT_FOUND", "Unknown project key");
 
 					const source = body.source === "widget" ? "widget" : "api";
-					const item = await submitFeedback(project, body, {
+					// Fully validated inside submitFeedback.
+					const item = await submitFeedback(project, body as SubmitFeedbackInput, {
 						source,
 						...requestMeta(),
 						origin: request.headers.get("origin"),

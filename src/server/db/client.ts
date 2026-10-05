@@ -11,9 +11,7 @@ const globalForDb = globalThis as unknown as {
 function connect() {
 	const url = process.env.DATABASE_URL;
 	if (!url) {
-		throw new Error(
-			"DATABASE_URL is not set. Copy .env.example to .env and point it at your Postgres database.",
-		);
+		throw new Error("DATABASE_URL is not set. Copy .env.example to .env and point it at your Postgres database.");
 	}
 	const sql = postgres(url, {
 		max: Number(process.env.DATABASE_POOL_MAX ?? 10),

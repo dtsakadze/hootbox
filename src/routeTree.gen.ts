@@ -15,11 +15,20 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppAccountRouteImport } from './routes/app/account'
 import { Route as AppNewRouteImport } from './routes/app/new'
+import { Route as AppTeamRouteImport } from './routes/app/team'
+import { Route as BSlugRouteImport } from './routes/b.$slug'
+import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as ApiV1FeedbackRouteImport } from './routes/api/v1/feedback'
 import { Route as ApiV1WidgetConfigRouteImport } from './routes/api/v1/widget-config'
+import { Route as AppPProjectIdRouteImport } from './routes/app/p.$projectId'
 import { Route as ApiProjectsProjectIdExportRouteImport } from './routes/api/projects/$projectId.export'
+import { Route as AppPProjectIdIndexRouteImport } from './routes/app/p.$projectId/index'
+import { Route as AppPProjectIdInsightsRouteImport } from './routes/app/p.$projectId/insights'
+import { Route as AppPProjectIdInstallRouteImport } from './routes/app/p.$projectId/install'
+import { Route as AppPProjectIdSettingsRouteImport } from './routes/app/p.$projectId/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,10 +60,30 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAccountRoute = AppAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNewRoute = AppNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => AppRoute,
+} as any)
+const AppTeamRoute = AppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AppRoute,
+} as any)
+const BSlugRoute = BSlugRouteImport.update({
+  id: '/b/$slug',
+  path: '/b/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FSlugRoute = FSlugRouteImport.update({
+  id: '/f/$slug',
+  path: '/f/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
@@ -71,12 +100,37 @@ const ApiV1WidgetConfigRoute = ApiV1WidgetConfigRouteImport.update({
   path: '/api/v1/widget-config',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppPProjectIdRoute = AppPProjectIdRouteImport.update({
+  id: '/p/$projectId',
+  path: '/p/$projectId',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiProjectsProjectIdExportRoute =
   ApiProjectsProjectIdExportRouteImport.update({
     id: '/api/projects/$projectId/export',
     path: '/api/projects/$projectId/export',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AppPProjectIdIndexRoute = AppPProjectIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppPProjectIdRoute,
+} as any)
+const AppPProjectIdInsightsRoute = AppPProjectIdInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => AppPProjectIdRoute,
+} as any)
+const AppPProjectIdInstallRoute = AppPProjectIdInstallRouteImport.update({
+  id: '/install',
+  path: '/install',
+  getParentRoute: () => AppPProjectIdRoute,
+} as any)
+const AppPProjectIdSettingsRoute = AppPProjectIdSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppPProjectIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -84,24 +138,41 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
   '/api/health': typeof ApiHealthRoute
+  '/app/account': typeof AppAccountRoute
   '/app/new': typeof AppNewRoute
+  '/app/team': typeof AppTeamRoute
+  '/b/$slug': typeof BSlugRoute
+  '/f/$slug': typeof FSlugRoute
   '/invite/$token': typeof InviteTokenRoute
   '/app/': typeof AppIndexRoute
   '/api/v1/feedback': typeof ApiV1FeedbackRoute
   '/api/v1/widget-config': typeof ApiV1WidgetConfigRoute
+  '/app/p/$projectId': typeof AppPProjectIdRouteWithChildren
   '/api/projects/$projectId/export': typeof ApiProjectsProjectIdExportRoute
+  '/app/p/$projectId/insights': typeof AppPProjectIdInsightsRoute
+  '/app/p/$projectId/install': typeof AppPProjectIdInstallRoute
+  '/app/p/$projectId/settings': typeof AppPProjectIdSettingsRoute
+  '/app/p/$projectId/': typeof AppPProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
   '/api/health': typeof ApiHealthRoute
+  '/app/account': typeof AppAccountRoute
   '/app/new': typeof AppNewRoute
+  '/app/team': typeof AppTeamRoute
+  '/b/$slug': typeof BSlugRoute
+  '/f/$slug': typeof FSlugRoute
   '/invite/$token': typeof InviteTokenRoute
   '/app': typeof AppIndexRoute
   '/api/v1/feedback': typeof ApiV1FeedbackRoute
   '/api/v1/widget-config': typeof ApiV1WidgetConfigRoute
   '/api/projects/$projectId/export': typeof ApiProjectsProjectIdExportRoute
+  '/app/p/$projectId/insights': typeof AppPProjectIdInsightsRoute
+  '/app/p/$projectId/install': typeof AppPProjectIdInstallRoute
+  '/app/p/$projectId/settings': typeof AppPProjectIdSettingsRoute
+  '/app/p/$projectId': typeof AppPProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,12 +181,21 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
   '/api/health': typeof ApiHealthRoute
+  '/app/account': typeof AppAccountRoute
   '/app/new': typeof AppNewRoute
+  '/app/team': typeof AppTeamRoute
+  '/b/$slug': typeof BSlugRoute
+  '/f/$slug': typeof FSlugRoute
   '/invite/$token': typeof InviteTokenRoute
   '/app/': typeof AppIndexRoute
   '/api/v1/feedback': typeof ApiV1FeedbackRoute
   '/api/v1/widget-config': typeof ApiV1WidgetConfigRoute
+  '/app/p/$projectId': typeof AppPProjectIdRouteWithChildren
   '/api/projects/$projectId/export': typeof ApiProjectsProjectIdExportRoute
+  '/app/p/$projectId/insights': typeof AppPProjectIdInsightsRoute
+  '/app/p/$projectId/install': typeof AppPProjectIdInstallRoute
+  '/app/p/$projectId/settings': typeof AppPProjectIdSettingsRoute
+  '/app/p/$projectId/': typeof AppPProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -125,24 +205,41 @@ export interface FileRouteTypes {
     | '/login'
     | '/setup'
     | '/api/health'
+    | '/app/account'
     | '/app/new'
+    | '/app/team'
+    | '/b/$slug'
+    | '/f/$slug'
     | '/invite/$token'
     | '/app/'
     | '/api/v1/feedback'
     | '/api/v1/widget-config'
+    | '/app/p/$projectId'
     | '/api/projects/$projectId/export'
+    | '/app/p/$projectId/insights'
+    | '/app/p/$projectId/install'
+    | '/app/p/$projectId/settings'
+    | '/app/p/$projectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/setup'
     | '/api/health'
+    | '/app/account'
     | '/app/new'
+    | '/app/team'
+    | '/b/$slug'
+    | '/f/$slug'
     | '/invite/$token'
     | '/app'
     | '/api/v1/feedback'
     | '/api/v1/widget-config'
     | '/api/projects/$projectId/export'
+    | '/app/p/$projectId/insights'
+    | '/app/p/$projectId/install'
+    | '/app/p/$projectId/settings'
+    | '/app/p/$projectId'
   id:
     | '__root__'
     | '/'
@@ -150,12 +247,21 @@ export interface FileRouteTypes {
     | '/login'
     | '/setup'
     | '/api/health'
+    | '/app/account'
     | '/app/new'
+    | '/app/team'
+    | '/b/$slug'
+    | '/f/$slug'
     | '/invite/$token'
     | '/app/'
     | '/api/v1/feedback'
     | '/api/v1/widget-config'
+    | '/app/p/$projectId'
     | '/api/projects/$projectId/export'
+    | '/app/p/$projectId/insights'
+    | '/app/p/$projectId/install'
+    | '/app/p/$projectId/settings'
+    | '/app/p/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -164,6 +270,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SetupRoute: typeof SetupRoute
   ApiHealthRoute: typeof ApiHealthRoute
+  BSlugRoute: typeof BSlugRoute
+  FSlugRoute: typeof FSlugRoute
   InviteTokenRoute: typeof InviteTokenRoute
   ApiV1FeedbackRoute: typeof ApiV1FeedbackRoute
   ApiV1WidgetConfigRoute: typeof ApiV1WidgetConfigRoute
@@ -214,12 +322,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/account': {
+      id: '/app/account'
+      path: '/account'
+      fullPath: '/app/account'
+      preLoaderRoute: typeof AppAccountRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/new': {
       id: '/app/new'
       path: '/new'
       fullPath: '/app/new'
       preLoaderRoute: typeof AppNewRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/team': {
+      id: '/app/team'
+      path: '/team'
+      fullPath: '/app/team'
+      preLoaderRoute: typeof AppTeamRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/b/$slug': {
+      id: '/b/$slug'
+      path: '/b/$slug'
+      fullPath: '/b/$slug'
+      preLoaderRoute: typeof BSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/f/$slug': {
+      id: '/f/$slug'
+      path: '/f/$slug'
+      fullPath: '/f/$slug'
+      preLoaderRoute: typeof FSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/invite/$token': {
       id: '/invite/$token'
@@ -242,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1WidgetConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/p/$projectId': {
+      id: '/app/p/$projectId'
+      path: '/p/$projectId'
+      fullPath: '/app/p/$projectId'
+      preLoaderRoute: typeof AppPProjectIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/projects/$projectId/export': {
       id: '/api/projects/$projectId/export'
       path: '/api/projects/$projectId/export'
@@ -249,17 +392,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiProjectsProjectIdExportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/p/$projectId/': {
+      id: '/app/p/$projectId/'
+      path: '/'
+      fullPath: '/app/p/$projectId/'
+      preLoaderRoute: typeof AppPProjectIdIndexRouteImport
+      parentRoute: typeof AppPProjectIdRoute
+    }
+    '/app/p/$projectId/insights': {
+      id: '/app/p/$projectId/insights'
+      path: '/insights'
+      fullPath: '/app/p/$projectId/insights'
+      preLoaderRoute: typeof AppPProjectIdInsightsRouteImport
+      parentRoute: typeof AppPProjectIdRoute
+    }
+    '/app/p/$projectId/install': {
+      id: '/app/p/$projectId/install'
+      path: '/install'
+      fullPath: '/app/p/$projectId/install'
+      preLoaderRoute: typeof AppPProjectIdInstallRouteImport
+      parentRoute: typeof AppPProjectIdRoute
+    }
+    '/app/p/$projectId/settings': {
+      id: '/app/p/$projectId/settings'
+      path: '/settings'
+      fullPath: '/app/p/$projectId/settings'
+      preLoaderRoute: typeof AppPProjectIdSettingsRouteImport
+      parentRoute: typeof AppPProjectIdRoute
+    }
   }
 }
 
+interface AppPProjectIdRouteChildren {
+  AppPProjectIdInsightsRoute: typeof AppPProjectIdInsightsRoute
+  AppPProjectIdInstallRoute: typeof AppPProjectIdInstallRoute
+  AppPProjectIdSettingsRoute: typeof AppPProjectIdSettingsRoute
+  AppPProjectIdIndexRoute: typeof AppPProjectIdIndexRoute
+}
+
+const AppPProjectIdRouteChildren: AppPProjectIdRouteChildren = {
+  AppPProjectIdInsightsRoute: AppPProjectIdInsightsRoute,
+  AppPProjectIdInstallRoute: AppPProjectIdInstallRoute,
+  AppPProjectIdSettingsRoute: AppPProjectIdSettingsRoute,
+  AppPProjectIdIndexRoute: AppPProjectIdIndexRoute,
+}
+
+const AppPProjectIdRouteWithChildren = AppPProjectIdRoute._addFileChildren(
+  AppPProjectIdRouteChildren,
+)
+
 interface AppRouteChildren {
+  AppAccountRoute: typeof AppAccountRoute
   AppNewRoute: typeof AppNewRoute
+  AppTeamRoute: typeof AppTeamRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppPProjectIdRoute: typeof AppPProjectIdRouteWithChildren
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAccountRoute: AppAccountRoute,
   AppNewRoute: AppNewRoute,
+  AppTeamRoute: AppTeamRoute,
   AppIndexRoute: AppIndexRoute,
+  AppPProjectIdRoute: AppPProjectIdRouteWithChildren,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -270,6 +465,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SetupRoute: SetupRoute,
   ApiHealthRoute: ApiHealthRoute,
+  BSlugRoute: BSlugRoute,
+  FSlugRoute: FSlugRoute,
   InviteTokenRoute: InviteTokenRoute,
   ApiV1FeedbackRoute: ApiV1FeedbackRoute,
   ApiV1WidgetConfigRoute: ApiV1WidgetConfigRoute,

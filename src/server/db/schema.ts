@@ -17,16 +17,9 @@ const tsvector = customType<{ data: string }>({
 	dataType: () => "tsvector",
 });
 
-const createdAt = () =>
-	timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
+const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
-import {
-	FEEDBACK_SOURCES,
-	FEEDBACK_STATUSES,
-	FEEDBACK_TYPES,
-	type FeedbackType,
-	MEMBER_ROLES,
-} from "#/lib/constants";
+import { FEEDBACK_SOURCES, FEEDBACK_STATUSES, FEEDBACK_TYPES, type FeedbackType, MEMBER_ROLES } from "#/lib/constants";
 
 export * from "#/lib/constants";
 
@@ -74,10 +67,7 @@ export const workspaceMembers = pgTable(
 		role: text("role", { enum: MEMBER_ROLES }).notNull().default("member"),
 		createdAt: createdAt(),
 	},
-	(t) => [
-		primaryKey({ columns: [t.workspaceId, t.userId] }),
-		index("workspace_members_user_idx").on(t.userId),
-	],
+	(t) => [primaryKey({ columns: [t.workspaceId, t.userId] }), index("workspace_members_user_idx").on(t.userId)],
 );
 
 export const invites = pgTable(
@@ -129,10 +119,7 @@ export const projects = pgTable(
 		autoPublish: boolean("auto_publish").notNull().default(false),
 		widgetSettings: jsonb("widget_settings").$type<WidgetSettings>().notNull(),
 		/** Empty = accept submissions from any origin. */
-		allowedOrigins: text("allowed_origins")
-			.array()
-			.notNull()
-			.default(sql`'{}'::text[]`),
+		allowedOrigins: text("allowed_origins").array().notNull().default(sql`'{}'::text[]`),
 		webhookUrl: text("webhook_url"),
 		webhookSecret: text("webhook_secret").notNull(),
 		/** Last assigned feedback number; bumped atomically on insert. */
@@ -156,12 +143,8 @@ export const feedback = pgTable(
 		/** Short, per-project sequence number shown in the UI (#42). */
 		number: integer("number").notNull(),
 		type: text("type", { enum: FEEDBACK_TYPES }).notNull().default("idea"),
-		status: text("status", { enum: FEEDBACK_STATUSES })
-			.notNull()
-			.default("new"),
-		source: text("source", { enum: FEEDBACK_SOURCES })
-			.notNull()
-			.default("widget"),
+		status: text("status", { enum: FEEDBACK_STATUSES }).notNull().default("new"),
+		source: text("source", { enum: FEEDBACK_SOURCES }).notNull().default("widget"),
 		title: text("title"),
 		message: text("message").notNull(),
 		/** 1–5 mood rating, optional. */
@@ -170,14 +153,8 @@ export const feedback = pgTable(
 		authorEmail: text("author_email"),
 		pageUrl: text("page_url"),
 		userAgent: text("user_agent"),
-		metadata: jsonb("metadata")
-			.$type<Record<string, string | number | boolean | null>>()
-			.notNull()
-			.default({}),
-		tags: text("tags")
-			.array()
-			.notNull()
-			.default(sql`'{}'::text[]`),
+		metadata: jsonb("metadata").$type<Record<string, string | number | boolean | null>>().notNull().default({}),
+		tags: text("tags").array().notNull().default(sql`'{}'::text[]`),
 		isPublic: boolean("is_public").notNull().default(false),
 		/** Shown publicly on the board beneath the post. */
 		publicReply: text("public_reply"),
@@ -186,17 +163,13 @@ export const feedback = pgTable(
 			sql`to_tsvector('simple', coalesce(title, '') || ' ' || message || ' ' || coalesce(author_email, '') || ' ' || coalesce(author_name, ''))`,
 		),
 		createdAt: createdAt(),
-		updatedAt: timestamp("updated_at", { withTimezone: true })
-			.notNull()
-			.defaultNow(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 	},
 	(t) => [
 		uniqueIndex("feedback_project_number_idx").on(t.projectId, t.number),
 		index("feedback_project_created_idx").on(t.projectId, t.createdAt),
 		index("feedback_project_status_idx").on(t.projectId, t.status),
-		index("feedback_public_idx")
-			.on(t.projectId, t.voteCount)
-			.where(sql`${t.isPublic}`),
+		index("feedback_public_idx").on(t.projectId, t.voteCount).where(sql`${t.isPublic}`),
 		index("feedback_search_idx").using("gin", t.search),
 		index("feedback_tags_idx").using("gin", t.tags),
 	],

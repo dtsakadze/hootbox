@@ -30,7 +30,11 @@ function InvitePage() {
 		);
 	}
 	return (
-		<AuthLayout title={`Join ${invite.workspaceName}`} subtitle={`You've been invited as ${invite.role === "member" ? "a member" : `an ${invite.role}`}. Create your account to hop in.`} color="mint">
+		<AuthLayout
+			title={`Join ${invite.workspaceName}`}
+			subtitle={`You've been invited as ${invite.role === "member" ? "a member" : `an ${invite.role}`}. Create your account to hop in.`}
+			color="mint"
+		>
 			<form onSubmit={form.onSubmit} className="space-y-4">
 				<ErrorNote>{form.error}</ErrorNote>
 				<Field label="Your name">{(id) => <input id={id} name="name" className="input" required autoComplete="name" />}</Field>

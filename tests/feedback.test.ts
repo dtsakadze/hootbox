@@ -14,8 +14,8 @@ import {
 	listPublicPosts,
 	listTags,
 	submitFeedback,
-	toPrefixQuery,
 	toggleVote,
+	toPrefixQuery,
 	updateFeedback,
 } from "#/server/services/feedback";
 import { updateProject } from "#/server/services/projects";
@@ -39,7 +39,7 @@ describe("submitFeedback", () => {
 		const rows = await Promise.all(
 			Array.from({ length: 8 }, (_, i) => submitFeedback(project, { message: `msg ${i}` }, { source: "api", ip: `1.1.1.${i}` })),
 		);
-		expect(new Set(rows.map((r) => r!.number)).size).toBe(8);
+		expect(new Set(rows.map((r) => r?.number)).size).toBe(8);
 	});
 
 	it("silently drops honeypot spam", async () => {
@@ -51,7 +51,9 @@ describe("submitFeedback", () => {
 	it("enforces allowed origins for the widget", async () => {
 		const { project, actor } = await seedProject();
 		const locked = await updateProject(actor, project.id, { allowedOrigins: ["https://myapp.com"] });
-		await expect(submitFeedback(locked, { message: "hello" }, { ...widget(), origin: "https://evil.com" })).rejects.toThrow(/aren't allowed/);
+		await expect(submitFeedback(locked, { message: "hello" }, { ...widget(), origin: "https://evil.com" })).rejects.toThrow(
+			/aren't allowed/,
+		);
 		await expect(submitFeedback(locked, { message: "hello" }, { ...widget(), origin: null })).rejects.toThrow(/aren't allowed/);
 		await expect(submitFeedback(locked, { message: "hello" }, { ...widget(), origin: "https://myapp.com" })).resolves.toBeTruthy();
 	});
@@ -116,7 +118,12 @@ describe("inbox", () => {
 		expect((await listFeedback(project.id, filters({ status: "all", q: "#3" }))).items[0].id).toBe(c.id);
 		expect((await listFeedback(project.id, filters({ status: "all", q: "'&|!:*" }))).total).toBe(3);
 		expect((await listFeedback(project.id, filters({ status: "all", sort: "oldest" }))).items[0].id).toBe(a.id);
-		expect(await listTags(project.id)).toEqual(expect.arrayContaining([{ tag: "ui", n: 1 }, { tag: "happy", n: 1 }]));
+		expect(await listTags(project.id)).toEqual(
+			expect.arrayContaining([
+				{ tag: "ui", n: 1 },
+				{ tag: "happy", n: 1 },
+			]),
+		);
 	});
 
 	it("paginates", async () => {

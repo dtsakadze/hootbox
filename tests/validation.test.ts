@@ -4,6 +4,7 @@ import {
 	slugSchema,
 	submitFeedbackSchema,
 	tagSchema,
+	updateFeedbackSchema,
 	updateProjectSchema,
 } from "#/lib/validation";
 
@@ -23,7 +24,10 @@ describe("submitFeedbackSchema", () => {
 		const many = Object.fromEntries(Array.from({ length: 21 }, (_, i) => [`k${i}`, i]));
 		expect(submitFeedbackSchema.safeParse({ message: "hello", metadata: many }).success).toBe(false);
 		expect(submitFeedbackSchema.safeParse({ message: "hello", metadata: { nested: { a: 1 } } }).success).toBe(false);
-		expect(submitFeedbackSchema.parse({ message: "hello", metadata: { plan: "pro", seats: 3 } }).metadata).toEqual({ plan: "pro", seats: 3 });
+		expect(submitFeedbackSchema.parse({ message: "hello", metadata: { plan: "pro", seats: 3 } }).metadata).toEqual({
+			plan: "pro",
+			seats: 3,
+		});
 	});
 
 	it("only accepts ratings 1–5", () => {
@@ -53,6 +57,16 @@ describe("other schemas", () => {
 	});
 
 	it("falls back to safe filter defaults", () => {
-		expect(feedbackFiltersSchema.parse({ status: "bogus", sort: "evil", page: -3 })).toMatchObject({ status: "open", sort: "newest", page: 1 });
+		expect(feedbackFiltersSchema.parse({ status: "bogus", sort: "evil", page: -3 })).toMatchObject({
+			status: "open",
+			sort: "newest",
+			page: 1,
+		});
+	});
+
+	it("leaves omitted feedback fields untouched in patches", () => {
+		expect(updateFeedbackSchema.parse({ status: "done" })).toEqual({ status: "done" });
+		expect(updateFeedbackSchema.parse({ publicReply: "" })).toEqual({ publicReply: null });
+		expect(updateFeedbackSchema.parse({ title: "  Hi " })).toEqual({ title: "Hi" });
 	});
 });

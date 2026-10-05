@@ -25,7 +25,13 @@ export function Owl({
 	const ink = "#1e1b2e";
 	const eye = (cx: number, closed: boolean) =>
 		closed ? (
-			<path d={`M${cx - 10} 54 Q${cx} ${mood === "sleepy" ? 58 : 44} ${cx + 10} 54`} fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round" />
+			<path
+				d={`M${cx - 10} 54 Q${cx} ${mood === "sleepy" ? 58 : 44} ${cx + 10} 54`}
+				fill="none"
+				stroke={ink}
+				strokeWidth="4.5"
+				strokeLinecap="round"
+			/>
 		) : (
 			<>
 				<circle cx={cx} cy="52" r="15" fill="#fff" stroke={ink} strokeWidth="4" />
@@ -44,7 +50,14 @@ export function Owl({
 				strokeWidth="4"
 			/>
 			<ellipse cx="60" cy="90" rx="25" ry="17" fill="#fff8e7" stroke={ink} strokeWidth="3.5" />
-			<path d="M50 86 l4 4 l4 -4 M62 86 l4 4 l4 -4 M56 95 l4 4 l4 -4" fill="none" stroke={ink} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+			<path
+				d="M50 86 l4 4 l4 -4 M62 86 l4 4 l4 -4 M56 95 l4 4 l4 -4"
+				fill="none"
+				stroke={ink}
+				strokeWidth="2.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
 			{eye(41, mood === "happy" || mood === "sleepy")}
 			{eye(79, mood === "happy" || mood === "wink" || mood === "sleepy")}
 			<path d="M52 64 L68 64 L60 76 Z" fill="#ffc83d" stroke={ink} strokeWidth="3.5" strokeLinejoin="round" />

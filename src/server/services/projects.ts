@@ -44,7 +44,13 @@ async function isSlugTaken(slug: string, exceptId?: string) {
 async function uniqueSlug(base: string) {
 	let slug = base;
 	for (let i = 2; await isSlugTaken(slug); i++) {
-		slug = `${base}-${i <= 9 ? i : randomToken(3).toLowerCase().replace(/[^a-z0-9]/g, "")}`;
+		slug = `${base}-${
+			i <= 9
+				? i
+				: randomToken(3)
+						.toLowerCase()
+						.replace(/[^a-z0-9]/g, "")
+		}`;
 	}
 	return slug;
 }
@@ -92,7 +98,15 @@ export async function listProjects(workspaceId: string) {
 	const counts = await getDb()
 		.select({ projectId: feedback.projectId, n: sql<number>`count(*)::int` })
 		.from(feedback)
-		.where(and(inArray(feedback.projectId, rows.map((r) => r.id)), eq(feedback.status, "new")))
+		.where(
+			and(
+				inArray(
+					feedback.projectId,
+					rows.map((r) => r.id),
+				),
+				eq(feedback.status, "new"),
+			),
+		)
 		.groupBy(feedback.projectId);
 	const byId = new Map(counts.map((c) => [c.projectId, c.n]));
 	return rows.map((r) => ({ ...r, newCount: byId.get(r.id) ?? 0 }));
@@ -119,11 +133,7 @@ export async function getProjectByPublicKey(key: string): Promise<Project | null
 	return project ?? null;
 }
 
-export async function updateProject(
-	actor: { role: MemberRole },
-	projectId: string,
-	input: z.output<typeof updateProjectSchema>,
-) {
+export async function updateProject(actor: { role: MemberRole }, projectId: string, input: z.output<typeof updateProjectSchema>) {
 	assertRole(actor.role, "admin");
 	if (input.slug && (await isSlugTaken(input.slug, projectId))) {
 		throw new AppError("CONFLICT", "That URL is already taken. Try another one.");
@@ -140,7 +150,11 @@ export async function updateProject(
 export async function rotateProjectSecret(actor: { role: MemberRole }, projectId: string, which: "publicKey" | "webhookSecret") {
 	assertRole(actor.role, "admin");
 	const value = which === "publicKey" ? newPublicKey() : `whsec_${randomToken(24)}`;
-	const [project] = await getDb().update(projects).set({ [which]: value }).where(eq(projects.id, projectId)).returning();
+	const [project] = await getDb()
+		.update(projects)
+		.set({ [which]: value })
+		.where(eq(projects.id, projectId))
+		.returning();
 	return project;
 }
 

@@ -27,9 +27,19 @@ function NewProject() {
 			<form onSubmit={form.onSubmit} className="card relative space-y-5 p-7">
 				<Owl size={64} color={color} mood="happy" className="absolute -top-10 right-6" />
 				<ErrorNote>{form.error}</ErrorNote>
-				<Field label="Name">{(id) => <input id={id} name="name" className="input" required maxLength={60} placeholder="My awesome app" autoFocus />}</Field>
+				<Field label="Name">
+					{(id) => <input id={id} name="name" className="input" required maxLength={60} placeholder="My awesome app" />}
+				</Field>
 				<Field label="Short description" hint="Shown on your public board.">
-					{(id) => <textarea id={id} name="description" className="input min-h-20" maxLength={300} placeholder="Tell us how we can make things better!" />}
+					{(id) => (
+						<textarea
+							id={id}
+							name="description"
+							className="input min-h-20"
+							maxLength={300}
+							placeholder="Tell us how we can make things better!"
+						/>
+					)}
 				</Field>
 				<div>
 					<span className="label">Color</span>

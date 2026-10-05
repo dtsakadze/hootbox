@@ -2,14 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { createProjectSchema, updateProjectSchema } from "#/lib/validation";
 import { appUrl } from "../http";
-import {
-	createProject,
-	deleteProject,
-	getProjectForUser,
-	listProjects,
-	rotateProjectSecret,
-	updateProject,
-} from "../services/projects";
+import { createProject, deleteProject, getProjectForUser, listProjects, rotateProjectSecret, updateProject } from "../services/projects";
 import { authMiddleware } from "./middleware";
 import { validate } from "./validate";
 

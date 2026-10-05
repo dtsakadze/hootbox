@@ -52,3 +52,40 @@ export function initials(name: string) {
 		.map((p) => p[0]?.toUpperCase())
 		.join("");
 }
+
+export function summarizeUserAgent(ua: string | null) {
+	if (!ua) return null;
+	const browser = /Edg\//.test(ua)
+		? "Edge"
+		: /OPR\//.test(ua)
+			? "Opera"
+			: /Firefox\//.test(ua)
+				? "Firefox"
+				: /Chrome\//.test(ua)
+					? "Chrome"
+					: /Safari\//.test(ua)
+						? "Safari"
+						: null;
+	const os = /iPhone|iPad/.test(ua)
+		? "iOS"
+		: /Android/.test(ua)
+			? "Android"
+			: /Mac OS X/.test(ua)
+				? "macOS"
+				: /Windows/.test(ua)
+					? "Windows"
+					: /Linux/.test(ua)
+						? "Linux"
+						: null;
+	return [browser, os].filter(Boolean).join(" on ") || "Unknown browser";
+}
+
+export function safeHttpUrl(url: string | null) {
+	if (!url) return null;
+	try {
+		const u = new URL(url);
+		return u.protocol === "http:" || u.protocol === "https:" ? u.href : null;
+	} catch {
+		return null;
+	}
+}

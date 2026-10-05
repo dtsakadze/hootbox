@@ -1,10 +1,4 @@
-export type ErrorCode =
-	| "BAD_REQUEST"
-	| "UNAUTHORIZED"
-	| "FORBIDDEN"
-	| "NOT_FOUND"
-	| "CONFLICT"
-	| "RATE_LIMITED";
+export type ErrorCode = "BAD_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND" | "CONFLICT" | "RATE_LIMITED";
 
 const STATUS: Record<ErrorCode, number> = {
 	BAD_REQUEST: 400,
@@ -29,5 +23,4 @@ export class AppError extends Error {
 }
 
 export const notFound = (what = "Not found") => new AppError("NOT_FOUND", what);
-export const forbidden = (msg = "You don't have access to this") =>
-	new AppError("FORBIDDEN", msg);
+export const forbidden = (msg = "You don't have access to this") => new AppError("FORBIDDEN", msg);

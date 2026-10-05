@@ -1,10 +1,5 @@
 import { z } from "zod";
-import {
-	FEEDBACK_STATUSES,
-	FEEDBACK_TYPES,
-	MEMBER_ROLES,
-	PROJECT_COLORS,
-} from "./constants";
+import { FEEDBACK_STATUSES, FEEDBACK_TYPES, MEMBER_ROLES, PROJECT_COLORS } from "./constants";
 
 export const LIMITS = {
 	message: 5000,
@@ -29,17 +24,9 @@ const optionalText = (max: number) =>
 		.nullable()
 		.transform((v) => (v ? v : null));
 
-export const emailSchema = z
-	.string()
-	.trim()
-	.toLowerCase()
-	.max(LIMITS.email)
-	.pipe(z.email("Please enter a valid email address"));
+export const emailSchema = z.string().trim().toLowerCase().max(LIMITS.email).pipe(z.email("Please enter a valid email address"));
 
-export const passwordSchema = z
-	.string()
-	.min(8, "Use at least 8 characters")
-	.max(200, "That password is a bit too long");
+export const passwordSchema = z.string().min(8, "Use at least 8 characters").max(200, "That password is a bit too long");
 
 export const nameSchema = trimmed(LIMITS.name).min(1, "Please enter a name");
 
@@ -113,14 +100,14 @@ export const updateProjectSchema = z.object({
 	autoPublish: z.boolean().optional(),
 	widgetSettings: widgetSettingsSchema.optional(),
 	allowedOrigins: z.array(originSchema).max(20).optional(),
-	webhookUrl: urlSchema.nullable().optional().or(z.literal("").transform(() => null)),
+	webhookUrl: urlSchema
+		.nullable()
+		.optional()
+		.or(z.literal("").transform(() => null)),
 });
 
 const metadataSchema = z
-	.record(
-		z.string().max(40),
-		z.union([z.string().max(500), z.number(), z.boolean(), z.null()]),
-	)
+	.record(z.string().max(40), z.union([z.string().max(500), z.number(), z.boolean(), z.null()]))
 	.refine((m) => Object.keys(m).length <= LIMITS.metadataKeys, "Too many metadata keys")
 	.default({});
 
@@ -128,11 +115,7 @@ const metadataSchema = z
 export const submitFeedbackSchema = z.object({
 	type: feedbackTypeSchema.default("idea"),
 	title: optionalText(LIMITS.title),
-	message: z
-		.string()
-		.trim()
-		.min(2, "Tell us a little more")
-		.max(LIMITS.message, `Please keep it under ${LIMITS.message} characters`),
+	message: z.string().trim().min(2, "Tell us a little more").max(LIMITS.message, `Please keep it under ${LIMITS.message} characters`),
 	rating: z.number().int().min(1).max(5).optional().nullable(),
 	name: optionalText(LIMITS.name),
 	email: z
@@ -159,19 +142,32 @@ export const tagSchema = z
 	.max(LIMITS.tag)
 	.regex(/^[\p{L}\p{N}][\p{L}\p{N} _-]*$/u, "Tags can contain letters, numbers, spaces, - and _");
 
+/** Like optionalText, but leaves a missing field as `undefined` (= "don't change"). */
+const patchText = (max: number) =>
+	z
+		.string()
+		.trim()
+		.max(max)
+		.nullable()
+		.transform((v) => (v ? v : null))
+		.optional();
+
 export const updateFeedbackSchema = z.object({
 	type: feedbackTypeSchema.optional(),
 	status: feedbackStatusSchema.optional(),
-	title: optionalText(LIMITS.title),
+	title: patchText(LIMITS.title),
 	tags: z.array(tagSchema).max(LIMITS.tags).optional(),
 	isPublic: z.boolean().optional(),
-	publicReply: optionalText(LIMITS.reply),
+	publicReply: patchText(LIMITS.reply),
 });
 
 export const SORTS = ["newest", "oldest", "votes"] as const;
 
 export const feedbackFiltersSchema = z.object({
-	status: z.union([feedbackStatusSchema, z.literal("open"), z.literal("all")]).catch("open").default("open"),
+	status: z
+		.union([feedbackStatusSchema, z.literal("open"), z.literal("all")])
+		.catch("open")
+		.default("open"),
 	type: feedbackTypeSchema.optional().catch(undefined),
 	tag: z.string().max(LIMITS.tag).optional().catch(undefined),
 	q: z.string().max(200).optional().catch(undefined),

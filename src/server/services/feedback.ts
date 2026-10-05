@@ -8,12 +8,7 @@ import {
 	type MemberRole,
 	OPEN_STATUSES,
 } from "#/lib/constants";
-import {
-	type FeedbackFilters,
-	type SubmitFeedbackInput,
-	submitFeedbackSchema,
-	type updateFeedbackSchema,
-} from "#/lib/validation";
+import { type FeedbackFilters, type SubmitFeedbackInput, submitFeedbackSchema, type updateFeedbackSchema } from "#/lib/validation";
 import { getDb } from "../db/client";
 import { type Feedback, feedback, notes, type Project, projects, users, votes } from "../db/schema";
 import { extensions } from "../extensions";
@@ -91,7 +86,12 @@ export async function submitFeedback(project: Project, raw: SubmitFeedbackInput,
 
 	const ipKey = ctx.ip ? await sha256(`ip:${ctx.ip}`) : "unknown";
 	await enforceRateLimit(`submit:${project.id}:${ipKey}`, 10, 600);
-	await enforceRateLimit(`submit:${project.id}`, 1000, 3600, "This project is receiving a lot of feedback right now. Please try again later.");
+	await enforceRateLimit(
+		`submit:${project.id}`,
+		1000,
+		3600,
+		"This project is receiving a lot of feedback right now. Please try again later.",
+	);
 	await extensions().beforeFeedbackCreate?.({ project });
 
 	const db = getDb();
@@ -150,7 +150,10 @@ function filterConditions(projectId: string, f: Partial<FeedbackFilters>): SQL[]
 		if (asNumber) where.push(eq(feedback.number, Number(asNumber[1])));
 		else if (f.q.includes("@")) {
 			// Emails are single tokens in the search vector, so match them directly.
-			const like = `%${f.q.trim().toLowerCase().replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+			const like = `%${f.q
+				.trim()
+				.toLowerCase()
+				.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
 			where.push(sql`${feedback.authorEmail} like ${like}`);
 		} else if (tsq) where.push(sql`${feedback.search} @@ to_tsquery('simple', ${tsq})`);
 	}
@@ -352,7 +355,14 @@ export async function getStats(projectId: string, days = 30) {
 			group by d.day order by d.day`),
 		listTags(projectId),
 		db
-			.select({ id: feedback.id, number: feedback.number, title: feedback.title, message: feedback.message, voteCount: feedback.voteCount, status: feedback.status })
+			.select({
+				id: feedback.id,
+				number: feedback.number,
+				title: feedback.title,
+				message: feedback.message,
+				voteCount: feedback.voteCount,
+				status: feedback.status,
+			})
 			.from(feedback)
 			.where(and(byProject, eq(feedback.isPublic, true), sql`${feedback.voteCount} > 0`))
 			.orderBy(desc(feedback.voteCount))
@@ -378,19 +388,39 @@ export async function getStats(projectId: string, days = 30) {
 
 function csvCell(value: unknown): string {
 	if (value === null || value === undefined) return "";
-	let s = value instanceof Date ? value.toISOString() : Array.isArray(value) ? value.join(", ") : typeof value === "object" ? JSON.stringify(value) : String(value);
+	let s =
+		value instanceof Date
+			? value.toISOString()
+			: Array.isArray(value)
+				? value.join(", ")
+				: typeof value === "object"
+					? JSON.stringify(value)
+					: String(value);
 	// Neutralise spreadsheet formula injection.
 	if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
 	return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
 export async function exportCsv(projectId: string): Promise<string> {
-	const rows = await getDb()
-		.select(columns)
-		.from(feedback)
-		.where(eq(feedback.projectId, projectId))
-		.orderBy(asc(feedback.number));
-	const header = ["number", "createdAt", "type", "status", "source", "title", "message", "rating", "authorName", "authorEmail", "pageUrl", "tags", "voteCount", "isPublic", "publicReply", "metadata"] as const;
+	const rows = await getDb().select(columns).from(feedback).where(eq(feedback.projectId, projectId)).orderBy(asc(feedback.number));
+	const header = [
+		"number",
+		"createdAt",
+		"type",
+		"status",
+		"source",
+		"title",
+		"message",
+		"rating",
+		"authorName",
+		"authorEmail",
+		"pageUrl",
+		"tags",
+		"voteCount",
+		"isPublic",
+		"publicReply",
+		"metadata",
+	] as const;
 	const lines = [header.join(",")];
 	for (const r of rows) lines.push(header.map((h) => csvCell(r[h])).join(","));
 	return `${lines.join("\r\n")}\r\n`;

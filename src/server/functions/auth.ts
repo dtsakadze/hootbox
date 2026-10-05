@@ -1,13 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-	acceptInviteSchema,
-	emailSchema,
-	loginSchema,
-	nameSchema,
-	passwordSchema,
-	setupSchema,
-} from "#/lib/validation";
+import { acceptInviteSchema, emailSchema, loginSchema, nameSchema, passwordSchema, setupSchema } from "#/lib/validation";
 import { clientIp, currentUser, endSession, startSession } from "../http";
 import { sha256 } from "../lib/crypto";
 import { authenticate, changePassword, isSetupComplete, setupInstance, updateProfile } from "../services/auth";

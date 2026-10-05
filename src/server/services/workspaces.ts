@@ -106,11 +106,7 @@ async function assertAnotherOwner(workspaceId: string, exceptUserId: string) {
 }
 
 /** Removes a member (or lets a member leave). The user account is deleted if it has no other workspace. */
-export async function removeMember(
-	actor: { userId: string; role: MemberRole },
-	workspaceId: string,
-	targetUserId: string,
-) {
+export async function removeMember(actor: { userId: string; role: MemberRole }, workspaceId: string, targetUserId: string) {
 	const self = actor.userId === targetUserId;
 	if (!self) assertRole(actor.role, "admin");
 	const current = await getMemberRole(workspaceId, targetUserId);
@@ -121,9 +117,7 @@ export async function removeMember(
 	}
 	const db = getDb();
 	await db.transaction(async (tx) => {
-		await tx
-			.delete(workspaceMembers)
-			.where(and(eq(workspaceMembers.workspaceId, workspaceId), eq(workspaceMembers.userId, targetUserId)));
+		await tx.delete(workspaceMembers).where(and(eq(workspaceMembers.workspaceId, workspaceId), eq(workspaceMembers.userId, targetUserId)));
 		const [other] = await tx
 			.select({ id: workspaceMembers.workspaceId })
 			.from(workspaceMembers)
@@ -172,7 +166,9 @@ export async function listPendingInvites(workspaceId: string) {
 
 export async function revokeInvite(actor: { role: MemberRole }, workspaceId: string, inviteId: string) {
 	assertRole(actor.role, "admin");
-	await getDb().delete(invites).where(and(eq(invites.id, inviteId), eq(invites.workspaceId, workspaceId)));
+	await getDb()
+		.delete(invites)
+		.where(and(eq(invites.id, inviteId), eq(invites.workspaceId, workspaceId)));
 }
 
 export async function getInviteByToken(token: string) {

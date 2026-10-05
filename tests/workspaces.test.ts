@@ -31,9 +31,9 @@ describe("invites", () => {
 		const mia = await acceptInvite({ token, name: "Mia", email: "mia@example.com", password: "password123" });
 		expect((await getMembership(mia.id))?.role).toBe("admin");
 		expect(await listPendingInvites(owner.workspace.id)).toHaveLength(0);
-		await expect(
-			acceptInvite({ token, name: "Mallory", email: "mal@example.com", password: "password123" }),
-		).rejects.toThrow(/invalid or has expired/);
+		await expect(acceptInvite({ token, name: "Mallory", email: "mal@example.com", password: "password123" })).rejects.toThrow(
+			/invalid or has expired/,
+		);
 	});
 
 	it("can't be used concurrently twice", async () => {
