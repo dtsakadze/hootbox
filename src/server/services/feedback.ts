@@ -148,7 +148,11 @@ function filterConditions(projectId: string, f: Partial<FeedbackFilters>): SQL[]
 		const asNumber = /^#?(\d{1,9})$/.exec(f.q.trim());
 		const tsq = toPrefixQuery(f.q);
 		if (asNumber) where.push(eq(feedback.number, Number(asNumber[1])));
-		else if (tsq) where.push(sql`${feedback.search} @@ to_tsquery('simple', ${tsq})`);
+		else if (f.q.includes("@")) {
+			// Emails are single tokens in the search vector, so match them directly.
+			const like = `%${f.q.trim().toLowerCase().replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+			where.push(sql`${feedback.authorEmail} like ${like}`);
+		} else if (tsq) where.push(sql`${feedback.search} @@ to_tsquery('simple', ${tsq})`);
 	}
 	return where;
 }
