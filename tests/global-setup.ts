@@ -4,7 +4,7 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 
 export default async function setup() {
-	const url = process.env.TEST_DATABASE_URL ?? "postgres://postgres:postgres@localhost:5432/hootbox_test";
+	const url = process.env.TEST_DATABASE_URL ?? "postgres://postgres:postgres@127.0.0.1:5432/hootbox_test";
 	if (!/test/i.test(new URL(url).pathname)) {
 		throw new Error(`Refusing to run tests against "${url}" — the database name must contain "test".`);
 	}

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { defineConfig } from "vitest/config";
 
-const testDb = process.env.TEST_DATABASE_URL ?? "postgres://postgres:postgres@localhost:5432/hootbox_test";
+const testDb = process.env.TEST_DATABASE_URL ?? "postgres://postgres:postgres@127.0.0.1:5432/hootbox_test";
 
 export default defineConfig({
 	resolve: { tsconfigPaths: true },
@@ -15,6 +15,7 @@ export default defineConfig({
 			DATABASE_URL: testDb,
 			DATABASE_POOL_MAX: "5",
 			PASSWORD_ITERATIONS: "1000",
+			ALLOW_PRIVATE_WEBHOOKS: "true",
 		},
 	},
 });

@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { hmacSha256Hex } from "#/server/lib/crypto";
 import { submitFeedback } from "#/server/services/feedback";
 import { updateProject } from "#/server/services/projects";
-import { buildWebhookBody, webhookKind } from "#/server/services/webhooks";
+import { buildWebhookBody, isPrivateWebhookTarget, sendFeedbackWebhook, webhookKind } from "#/server/services/webhooks";
 import { seedProject } from "./helpers";
 
 const received: { headers: IncomingHttpHeaders; body: string }[] = [];
@@ -63,6 +63,37 @@ describe("webhooks", () => {
 		const dead = await updateProject(actor, project.id, { webhookUrl: "http://127.0.0.1:1/nothing" });
 		await expect(submitFeedback(dead, { message: "Still saved" }, { source: "widget", ip: "4.4.4.4" })).resolves.toBeTruthy();
 		status = 200;
+	});
+
+	it("flags private webhook targets", () => {
+		for (const u of [
+			"http://localhost/x",
+			"http://127.0.0.1:8080",
+			"http://10.1.2.3",
+			"http://169.254.169.254/latest",
+			"http://192.168.1.1",
+			"http://172.20.0.1",
+			"http://[::1]/",
+			"http://db.internal/",
+		]) {
+			expect(isPrivateWebhookTarget(u), u).toBe(true);
+		}
+		for (const u of ["https://hooks.slack.com/x", "https://8.8.8.8/", "https://172.32.0.1/", "https://example.com/"]) {
+			expect(isPrivateWebhookTarget(u), u).toBe(false);
+		}
+	});
+
+	it("skips private targets unless explicitly allowed", async () => {
+		const { project, actor } = await seedProject();
+		const p = await updateProject(actor, project.id, { webhookUrl: url });
+		process.env.ALLOW_PRIVATE_WEBHOOKS = "false";
+		received.length = 0;
+		try {
+			expect(await sendFeedbackWebhook(p, { id: "x", number: 1, type: "idea", message: "hi" } as never)).toBe(false);
+			expect(received).toHaveLength(0);
+		} finally {
+			process.env.ALLOW_PRIVATE_WEBHOOKS = "true";
+		}
 	});
 
 	it("formats Slack and Discord messages", async () => {

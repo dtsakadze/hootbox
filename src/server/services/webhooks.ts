@@ -53,12 +53,50 @@ export function buildWebhookBody(project: Project, item: WebhookFeedback, appUrl
 }
 
 /**
+ * Refuses obviously-internal targets (loopback, private ranges, link-local/cloud
+ * metadata) unless ALLOW_PRIVATE_WEBHOOKS=true. Hostnames that *resolve* to
+ * private IPs aren't caught here — run behind an egress proxy if that matters.
+ */
+export function isPrivateWebhookTarget(url: string) {
+	const host = new URL(url).hostname.toLowerCase().replace(/^\[|\]$/g, "");
+	if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".internal") || host.endsWith(".local")) return true;
+	if (
+		host === "::1" ||
+		host === "::" ||
+		host.startsWith("fc") ||
+		host.startsWith("fd") ||
+		host.startsWith("fe80:") ||
+		host.startsWith("::ffff:")
+	) {
+		return host.includes(":");
+	}
+	const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+	if (!m) return false;
+	const [a, b] = [Number(m[1]), Number(m[2])];
+	return (
+		a === 0 ||
+		a === 10 ||
+		a === 127 ||
+		(a === 169 && b === 254) ||
+		(a === 172 && b >= 16 && b <= 31) ||
+		(a === 192 && b === 168) ||
+		(a === 100 && b >= 64 && b <= 127)
+	);
+}
+
+/**
  * Notifies the project's webhook. Slack & Discord URLs get a chat-formatted
  * message; anything else gets JSON signed with `X-Hootbox-Signature`.
  * Never throws — a failing webhook must not lose feedback.
  */
 export async function sendFeedbackWebhook(project: Project, item: WebhookFeedback, appUrl?: string) {
 	if (!project.webhookUrl) return false;
+	if (process.env.ALLOW_PRIVATE_WEBHOOKS !== "true" && isPrivateWebhookTarget(project.webhookUrl)) {
+		console.warn(
+			`[hootbox] webhook for project ${project.id} points to a private address; skipped (set ALLOW_PRIVATE_WEBHOOKS=true to allow)`,
+		);
+		return false;
+	}
 	try {
 		const body = JSON.stringify(buildWebhookBody(project, item, appUrl));
 		const timestamp = Math.floor(Date.now() / 1000).toString();

@@ -55,6 +55,11 @@ describe("submitFeedback", () => {
 			/aren't allowed/,
 		);
 		await expect(submitFeedback(locked, { message: "hello" }, { ...widget(), origin: null })).rejects.toThrow(/aren't allowed/);
+		// Server-side API calls carry no Origin and stay allowed.
+		await expect(submitFeedback(locked, { message: "hello" }, { source: "api", ip: "5.5.5.5", origin: null })).resolves.toBeTruthy();
+		await expect(
+			submitFeedback(locked, { message: "hello" }, { source: "api", ip: "5.5.5.5", origin: "https://evil.com" }),
+		).rejects.toThrow(/aren't allowed/);
 		await expect(submitFeedback(locked, { message: "hello" }, { ...widget(), origin: "https://myapp.com" })).resolves.toBeTruthy();
 	});
 

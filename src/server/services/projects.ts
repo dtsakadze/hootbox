@@ -3,11 +3,11 @@ import type { z } from "zod";
 import type { MemberRole } from "#/lib/constants";
 import type { createProjectSchema, updateProjectSchema } from "#/lib/validation";
 import { getDb } from "../db/client";
-import { feedback, type Project, projects, type WidgetSettings } from "../db/schema";
+import { feedback, type Project, projects, type WidgetSettings, workspaceMembers } from "../db/schema";
 import { extensions } from "../extensions";
 import { newId, randomToken } from "../lib/crypto";
 import { AppError, notFound } from "../lib/errors";
-import { assertRole, getMembership } from "./workspaces";
+import { assertRole } from "./workspaces";
 
 export const DEFAULT_WIDGET_SETTINGS: WidgetSettings = {
 	buttonLabel: "Feedback",
@@ -114,11 +114,15 @@ export async function listProjects(workspaceId: string) {
 
 /** Loads a project the user can access, along with their role. Throws 404 otherwise. */
 export async function getProjectForUser(userId: string, projectId: string) {
-	const [project] = await getDb().select().from(projects).where(eq(projects.id, projectId)).limit(1);
-	if (!project) throw notFound("Project not found");
-	const membership = await getMembership(userId, project.workspaceId);
-	if (!membership) throw notFound("Project not found");
-	return { project, role: membership.role };
+	const [row] = await getDb()
+		.select({ project: projects, role: workspaceMembers.role })
+		.from(projects)
+		.innerJoin(workspaceMembers, and(eq(workspaceMembers.workspaceId, projects.workspaceId), eq(workspaceMembers.userId, userId)))
+		.where(eq(projects.id, projectId))
+		.limit(1);
+	// Same 404 whether it doesn't exist or isn't yours: don't leak existence.
+	if (!row) throw notFound("Project not found");
+	return row;
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {

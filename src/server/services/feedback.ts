@@ -55,9 +55,14 @@ export type SubmitContext = {
 	appUrl?: string;
 };
 
-export function isOriginAllowed(project: Pick<Project, "allowedOrigins">, origin?: string | null) {
+/**
+ * The allowlist governs browsers (which always send Origin on cross-site POSTs).
+ * The widget only runs in browsers, so a missing Origin is suspicious there; plain
+ * API calls from servers/apps have no Origin and are allowed.
+ */
+export function isOriginAllowed(project: Pick<Project, "allowedOrigins">, origin: string | null | undefined, source: FeedbackSource) {
 	if (project.allowedOrigins.length === 0) return true;
-	if (!origin) return false;
+	if (!origin) return source !== "widget";
 	return project.allowedOrigins.includes(origin.toLowerCase());
 }
 
@@ -69,7 +74,7 @@ export async function submitFeedback(project: Project, raw: SubmitFeedbackInput,
 	if ((ctx.source === "board" || ctx.source === "form") && !project.boardSubmissions) {
 		throw forbidden("This project isn't accepting public submissions.");
 	}
-	if ((ctx.source === "widget" || ctx.source === "api") && !isOriginAllowed(project, ctx.origin)) {
+	if ((ctx.source === "widget" || ctx.source === "api") && !isOriginAllowed(project, ctx.origin, ctx.source)) {
 		throw forbidden("Submissions from this website aren't allowed.");
 	}
 

@@ -9,15 +9,14 @@ import { Button, Field, Toggle } from "#/components/ui";
 import { FEEDBACK_TYPES, type FeedbackType, type ProjectColor } from "#/lib/constants";
 import { TYPE_META } from "#/lib/meta";
 import type { updateProjectSchema } from "#/lib/validation";
-import { deleteProjectFn, getProjectFn, rotateSecretFn, sendTestWebhookFn, updateProjectFn } from "#/server/functions/projects";
+import { deleteProjectFn, rotateSecretFn, sendTestWebhookFn, updateProjectFn } from "#/server/functions/projects";
 
 const projectRoute = getRouteApi("/app/p/$projectId");
 type Patch = z.input<typeof updateProjectSchema>;
 
 export const Route = createFileRoute("/app/p/$projectId/settings")({
-	beforeLoad: async ({ params }) => {
-		const { canManage } = await getProjectFn({ data: { projectId: params.projectId } });
-		if (!canManage) throw redirect({ to: "/app/p/$projectId", params });
+	beforeLoad: ({ params, context }) => {
+		if (context.role === "member") throw redirect({ to: "/app/p/$projectId", params });
 	},
 	component: Settings,
 });
