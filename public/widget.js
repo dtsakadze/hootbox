@@ -1,4 +1,4 @@
-/*! Hootbox feedback widget · MIT License · https://github.com/hootbox/hootbox */
+/*! Hootbox feedback widget · MIT License · https://github.com/dtsakadze/hootbox */
 (() => {
 	if (window.Hootbox?.__loaded) return;
 
@@ -241,7 +241,7 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 		});
 		panel.appendChild(form);
 		const foot = el("div", { class: "foot" });
-		foot.append("Powered by ", el("a", { href: "https://github.com/hootbox/hootbox", target: "_blank", rel: "noopener", text: "Hootbox" }));
+		foot.append("Powered by ", el("a", { href: "https://github.com/dtsakadze/hootbox", target: "_blank", rel: "noopener", text: "Hootbox" }));
 		panel.appendChild(foot);
 
 		panel.addEventListener("keydown", (e) => {

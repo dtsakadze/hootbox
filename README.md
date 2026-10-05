@@ -30,7 +30,7 @@ A widget for your site, a public board with voting and a roadmap, and a cosy inb
 ### Docker (recommended for self-hosting)
 
 ```bash
-git clone https://github.com/hootbox/hootbox.git && cd hootbox
+git clone https://github.com/dtsakadze/hootbox.git && cd hootbox
 docker compose up -d
 ```
 
