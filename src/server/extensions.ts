@@ -20,6 +20,22 @@ export interface Extensions {
 const defaults: Extensions = { allowOpenSignup: false };
 let current: Extensions = { ...defaults };
 
+/**
+ * Auto-loads the optional, separately-licensed `ee/` package (e.g. a private git
+ * submodule used by the hosted edition). Its `ee/server/index.ts` default export
+ * is registered here. Without an `ee/` folder this is a no-op.
+ */
+function loadEditionExtensions(): Partial<Extensions> {
+	try {
+		const mods = import.meta.glob<{ default: Partial<Extensions> }>("/ee/server/index.ts", { eager: true });
+		return Object.values(mods)[0]?.default ?? {};
+	} catch {
+		return {}; // Not running under Vite (e.g. plain tsx scripts).
+	}
+}
+const edition = loadEditionExtensions();
+current = { ...current, ...edition };
+
 export function registerExtensions(ext: Partial<Extensions>) {
 	current = { ...current, ...ext };
 }
@@ -28,7 +44,7 @@ export function extensions(): Extensions {
 	return current;
 }
 
-/** Test helper. */
+/** Test helper: back to defaults (plus the edition's extensions, if any). */
 export function resetExtensions() {
-	current = { ...defaults };
+	current = { ...defaults, ...edition };
 }
