@@ -10,33 +10,164 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SetupRouteImport } from './routes/setup'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppNewRouteImport } from './routes/app/new'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
+import { Route as ApiV1FeedbackRouteImport } from './routes/api/v1/feedback'
+import { Route as ApiV1WidgetConfigRouteImport } from './routes/api/v1/widget-config'
+import { Route as ApiProjectsProjectIdExportRouteImport } from './routes/api/projects/$projectId.export'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNewRoute = AppNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1FeedbackRoute = ApiV1FeedbackRouteImport.update({
+  id: '/api/v1/feedback',
+  path: '/api/v1/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1WidgetConfigRoute = ApiV1WidgetConfigRouteImport.update({
+  id: '/api/v1/widget-config',
+  path: '/api/v1/widget-config',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiProjectsProjectIdExportRoute =
+  ApiProjectsProjectIdExportRouteImport.update({
+    id: '/api/projects/$projectId/export',
+    path: '/api/projects/$projectId/export',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
+  '/api/health': typeof ApiHealthRoute
+  '/app/new': typeof AppNewRoute
+  '/invite/$token': typeof InviteTokenRoute
+  '/app/': typeof AppIndexRoute
+  '/api/v1/feedback': typeof ApiV1FeedbackRoute
+  '/api/v1/widget-config': typeof ApiV1WidgetConfigRoute
+  '/api/projects/$projectId/export': typeof ApiProjectsProjectIdExportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
+  '/api/health': typeof ApiHealthRoute
+  '/app/new': typeof AppNewRoute
+  '/invite/$token': typeof InviteTokenRoute
+  '/app': typeof AppIndexRoute
+  '/api/v1/feedback': typeof ApiV1FeedbackRoute
+  '/api/v1/widget-config': typeof ApiV1WidgetConfigRoute
+  '/api/projects/$projectId/export': typeof ApiProjectsProjectIdExportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
+  '/api/health': typeof ApiHealthRoute
+  '/app/new': typeof AppNewRoute
+  '/invite/$token': typeof InviteTokenRoute
+  '/app/': typeof AppIndexRoute
+  '/api/v1/feedback': typeof ApiV1FeedbackRoute
+  '/api/v1/widget-config': typeof ApiV1WidgetConfigRoute
+  '/api/projects/$projectId/export': typeof ApiProjectsProjectIdExportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/setup'
+    | '/api/health'
+    | '/app/new'
+    | '/invite/$token'
+    | '/app/'
+    | '/api/v1/feedback'
+    | '/api/v1/widget-config'
+    | '/api/projects/$projectId/export'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/setup'
+    | '/api/health'
+    | '/app/new'
+    | '/invite/$token'
+    | '/app'
+    | '/api/v1/feedback'
+    | '/api/v1/widget-config'
+    | '/api/projects/$projectId/export'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/login'
+    | '/setup'
+    | '/api/health'
+    | '/app/new'
+    | '/invite/$token'
+    | '/app/'
+    | '/api/v1/feedback'
+    | '/api/v1/widget-config'
+    | '/api/projects/$projectId/export'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SetupRoute: typeof SetupRoute
+  ApiHealthRoute: typeof ApiHealthRoute
+  InviteTokenRoute: typeof InviteTokenRoute
+  ApiV1FeedbackRoute: typeof ApiV1FeedbackRoute
+  ApiV1WidgetConfigRoute: typeof ApiV1WidgetConfigRoute
+  ApiProjectsProjectIdExportRoute: typeof ApiProjectsProjectIdExportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,12 +179,112 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/new': {
+      id: '/app/new'
+      path: '/new'
+      fullPath: '/app/new'
+      preLoaderRoute: typeof AppNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/feedback': {
+      id: '/api/v1/feedback'
+      path: '/api/v1/feedback'
+      fullPath: '/api/v1/feedback'
+      preLoaderRoute: typeof ApiV1FeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/widget-config': {
+      id: '/api/v1/widget-config'
+      path: '/api/v1/widget-config'
+      fullPath: '/api/v1/widget-config'
+      preLoaderRoute: typeof ApiV1WidgetConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/projects/$projectId/export': {
+      id: '/api/projects/$projectId/export'
+      path: '/api/projects/$projectId/export'
+      fullPath: '/api/projects/$projectId/export'
+      preLoaderRoute: typeof ApiProjectsProjectIdExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppNewRoute: typeof AppNewRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppNewRoute: AppNewRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SetupRoute: SetupRoute,
+  ApiHealthRoute: ApiHealthRoute,
+  InviteTokenRoute: InviteTokenRoute,
+  ApiV1FeedbackRoute: ApiV1FeedbackRoute,
+  ApiV1WidgetConfigRoute: ApiV1WidgetConfigRoute,
+  ApiProjectsProjectIdExportRoute: ApiProjectsProjectIdExportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
