@@ -13,17 +13,17 @@ A widget for your site, a public board with voting and a roadmap, and a cosy inb
 
 ## Features
 
-- **💬 Embeddable widget** — one `<script>` tag adds a playful feedback button to any website. Feedback type, mood rating, optional email, page URL and browser are captured automatically. Custom triggers, user identification and metadata via a tiny JS API.
-- **🗳️ Public board & roadmap** — let users post ideas, upvote, and see what's *planned*, *in progress* and *done*. Reply publicly to posts.
-- **🔗 Shareable form** — a standalone feedback page for emails, QR codes and support replies. Embeddable via iframe.
-- **📥 Inbox** — filter by status, type and tag, full-text search, bulk triage, tags, internal team notes, one-click "reply by email".
-- **📊 Insights** — volume over time, breakdown by type & status, average mood, top tags and most-voted ideas.
-- **🔔 Notifications** — Slack and Discord webhooks out of the box, or signed JSON webhooks for anything else.
-- **🛠️ REST API** — submit feedback from your backend, mobile app or Zapier.
-- **👥 Teams** — invite teammates with single-use links; owner / admin / member roles.
-- **📦 CSV export** — your data, whenever you want it.
-- **🔒 Secure by default** — hashed sessions & passwords, CSRF protection, rate limiting, spam honeypot, origin allowlist, security headers.
-- **🚀 Deploy anywhere** — Docker, any Node host/VPS, Vercel, Netlify or Cloudflare Workers. Just needs Postgres.
+- **💬 Embeddable widget**: one `<script>` tag adds a playful feedback button to any website. Feedback type, mood rating, optional email, page URL and browser are captured automatically. Custom triggers, user identification and metadata via a tiny JS API.
+- **🗳️ Public board & roadmap**: let users post ideas, upvote, and see what's *planned*, *in progress* and *done*. Reply publicly to posts.
+- **🔗 Shareable form**: a standalone feedback page for emails, QR codes and support replies. Embeddable via iframe.
+- **📥 Inbox**: filter by status, type and tag, full-text search, bulk triage, tags, internal team notes, one-click "reply by email".
+- **📊 Insights**: volume over time, breakdown by type & status, average mood, top tags and most-voted ideas.
+- **🔔 Notifications**: Slack and Discord webhooks out of the box, or signed JSON webhooks for anything else.
+- **🛠️ REST API**: submit feedback from your backend, mobile app or Zapier.
+- **👥 Teams**: invite teammates with single-use links; owner / admin / member roles.
+- **📦 CSV export**: your data, whenever you want it.
+- **🔒 Secure by default**: hashed sessions & passwords, CSRF protection, rate limiting, spam honeypot, origin allowlist, security headers.
+- **🚀 Deploy anywhere**: Docker, any Node host/VPS, Vercel, Netlify or Cloudflare Workers. Just needs Postgres.
 
 ## Quick start
 
@@ -95,4 +95,4 @@ Find your snippet under **Share & install** in each project. See **[docs/widget.
 
 ## License
 
-[MIT](LICENSE) — free for personal and commercial use.
+[MIT](LICENSE): free for personal and commercial use.

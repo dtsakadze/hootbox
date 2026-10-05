@@ -8,7 +8,7 @@ organisations, a super-admin) can be built **on top** without forking.
 
 1. **Workspaces.** Every project belongs to a workspace and every user's access
    comes from `workspace_members`. The OSS edition runs one workspace per
-   instance; a hosted edition can let users belong to many — `getMembership()`
+   instance; a hosted edition can let users belong to many (`getMembership()`
    already accepts a `workspaceId`.
 2. **Extension hooks** (`src/server/extensions.ts`):
 
@@ -52,14 +52,14 @@ git submodule add git@github.com:you/hootbox-ee.git ee
 
 - The public repo never contains proprietary code (and `ee/` is simply absent
   for self-hosters).
-- The hosted build checks out submodules; everything else — CI, migrations,
-  tests — stays shared.
+- The hosted build checks out submodules; everything else (CI, migrations,
+  tests) stays shared.
 - Upstream improvements flow into the hosted product with no merge conflicts,
   because the commercial code only touches the extension points.
 
 If you'd rather publish the commercial code as *source-available*, the same
 `ee/` folder can live in this repo with its own `ee/LICENSE` (the model used by
-Cal.com, PostHog and others) — the loading mechanism is identical.
+Cal.com, PostHog and others). The loading mechanism is identical.
 
 ## Adding hosted-only pages and tables
 

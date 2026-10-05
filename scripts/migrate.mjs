@@ -7,7 +7,7 @@ import postgres from "postgres";
 try {
 	process.loadEnvFile?.();
 } catch {
-	// No .env file — rely on the real environment.
+	// No .env file: rely on the real environment.
 }
 
 const url = process.env.DATABASE_URL;

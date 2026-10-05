@@ -4,7 +4,7 @@ Thanks for helping make Hootbox better! 🦉
 
 1. Fork & clone, then follow **Local development** in the [README](README.md).
 2. Create a branch, make your change, and add tests for business logic in `tests/`
-   (they run against a real Postgres database — please don't mock the DB).
+   (they run against a real Postgres database, so please don't mock the DB).
 3. Make sure everything passes:
 
    ```bash

@@ -188,7 +188,7 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 						maxlength: "254",
 						autocomplete: "email",
 						"aria-label": "Email",
-						placeholder: cfg.askEmail === "required" ? "Your email" : "Email (optional) — so we can reply",
+						placeholder: cfg.askEmail === "required" ? "Your email" : "Email (optional), so we can reply",
 						required: cfg.askEmail === "required",
 					});
 		const honeypot = el("input", { class: "hp", name: "website", tabindex: "-1", autocomplete: "off", "aria-hidden": "true" });

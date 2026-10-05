@@ -21,12 +21,12 @@ export function buildWebhookBody(project: Project, item: WebhookFeedback, appUrl
 
 	if (kind === "slack") {
 		return {
-			text: `*${heading}*\n${item.title ? `*${item.title}*\n` : ""}${excerpt}\n— ${who}${link ? `\n<${link}|Open in Hootbox>` : ""}`,
+			text: `*${heading}*\n${item.title ? `*${item.title}*\n` : ""}${excerpt}\n- ${who}${link ? `\n<${link}|Open in Hootbox>` : ""}`,
 		};
 	}
 	if (kind === "discord") {
 		return {
-			content: `**${heading}**\n${item.title ? `**${item.title}**\n` : ""}${excerpt}\n— ${who}${link ? `\n${link}` : ""}`.slice(0, 1990),
+			content: `**${heading}**\n${item.title ? `**${item.title}**\n` : ""}${excerpt}\n- ${who}${link ? `\n${link}` : ""}`.slice(0, 1990),
 			allowed_mentions: { parse: [] },
 		};
 	}
@@ -55,7 +55,7 @@ export function buildWebhookBody(project: Project, item: WebhookFeedback, appUrl
 /**
  * Refuses obviously-internal targets (loopback, private ranges, link-local/cloud
  * metadata) unless ALLOW_PRIVATE_WEBHOOKS=true. Hostnames that *resolve* to
- * private IPs aren't caught here — run behind an egress proxy if that matters.
+ * private IPs aren't caught here; run behind an egress proxy if that matters.
  */
 export function isPrivateWebhookTarget(url: string) {
 	const host = new URL(url).hostname.toLowerCase().replace(/^\[|\]$/g, "");
@@ -87,7 +87,7 @@ export function isPrivateWebhookTarget(url: string) {
 /**
  * Notifies the project's webhook. Slack & Discord URLs get a chat-formatted
  * message; anything else gets JSON signed with `X-Hootbox-Signature`.
- * Never throws — a failing webhook must not lose feedback.
+ * Never throws: a failing webhook must not lose feedback.
  */
 export async function sendFeedbackWebhook(project: Project, item: WebhookFeedback, appUrl?: string) {
 	if (!project.webhookUrl) return false;

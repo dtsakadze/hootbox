@@ -59,7 +59,7 @@ const PIXEL: Seed[] = [
 		tags: ["integrations"],
 		public: true,
 		votes: 37,
-		reply: "Planned for next quarter — thanks for all the votes!",
+		reply: "Planned for next quarter. Thanks for all the votes!",
 	},
 	{
 		type: "idea",
@@ -154,7 +154,7 @@ const PIXEL: Seed[] = [
 		message: "After logging out and in again my filters are reset.",
 		status: "closed",
 		rating: 3,
-		note: "Works as intended — filters are per session. Maybe revisit later.",
+		note: "Works as intended: filters are per session. Maybe revisit later.",
 	},
 	{ type: "bug", message: "The app crashed when I pasted an image into a task description.", status: "new", rating: 1 },
 	{
@@ -180,7 +180,7 @@ const RECIPES: Seed[] = [
 		status: "done",
 		public: true,
 		votes: 41,
-		reply: "Live in the latest update — enjoy!",
+		reply: "Live in the latest update. Enjoy!",
 	},
 	{
 		type: "idea",

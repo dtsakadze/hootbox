@@ -2,7 +2,7 @@
 
 ## Submit feedback
 
-`POST /api/v1/feedback` — public, CORS-enabled. Authenticate with the project
+`POST /api/v1/feedback` is public and CORS-enabled. Authenticate with the project
 key in the body (`key`) or the `X-Hootbox-Key` header. The key is **not a
 secret**: it can only create feedback.
 
@@ -36,10 +36,10 @@ curl -X POST https://YOUR-HOOTBOX/api/v1/feedback \
 **Responses**
 
 - `201 { "ok": true, "id": "…", "number": 42, "message": "<thank-you text>" }`
-- `400 { "error": "…", "code": "BAD_REQUEST" }` — validation failed
-- `403 { …, "code": "FORBIDDEN" }` — origin not allowed
-- `404 { …, "code": "NOT_FOUND" }` — unknown key
-- `429 { …, "code": "RATE_LIMITED" }` — 10 submissions / 10 min per IP per project
+- `400 { "error": "…", "code": "BAD_REQUEST" }`: validation failed
+- `403 { …, "code": "FORBIDDEN" }`: origin not allowed
+- `404 { …, "code": "NOT_FOUND" }`: unknown key
+- `429 { …, "code": "RATE_LIMITED" }`: 10 submissions / 10 min per IP per project
 
 Bodies are limited to 32 KB.
 

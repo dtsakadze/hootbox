@@ -81,7 +81,7 @@ function Settings() {
 	async function testWebhook() {
 		try {
 			const { ok } = await sendTestWebhookFn({ data: { projectId: project.id } });
-			if (ok) toast.success("Test sent — check your channel!");
+			if (ok) toast.success("Test sent. Check your channel!");
 			else toast.error("The webhook didn't accept our test. Check the URL.");
 		} catch (err) {
 			toast.error(errorMessage(err));

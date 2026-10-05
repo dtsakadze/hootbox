@@ -28,7 +28,7 @@ function SetupPage() {
 				<Field label="Password" hint="At least 8 characters.">
 					{(id) => <input id={id} name="password" type="password" className="input" required minLength={8} autoComplete="new-password" />}
 				</Field>
-				<Field label="Workspace name" hint="Your company or team — you can change it later.">
+				<Field label="Workspace name" hint="Your company or team. You can change it later.">
 					{(id) => <input id={id} name="workspaceName" className="input" required placeholder="Acme Inc." />}
 				</Field>
 				<Button type="submit" loading={form.pending} className="w-full mt-2">

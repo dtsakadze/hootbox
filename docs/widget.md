@@ -8,7 +8,7 @@ Add one line before `</body>`:
 
 A feedback button appears in the corner. Its label, position, which feedback
 types to offer, whether to ask for an email, and the thank-you message are set
-per project in **Settings → Widget** — no code changes needed.
+per project in **Settings → Widget**, no code changes needed.
 
 The widget is dependency-free (~5 KB gzipped), renders inside a Shadow DOM so your site's
 CSS can't break it (and it can't affect your site), is keyboard accessible, and
@@ -19,7 +19,7 @@ respects `prefers-reduced-motion`.
 | Attribute          | Description |
 | ------------------ | ----------- |
 | `data-key`         | **Required.** The project key (Settings → Security). It's public: it can only *create* feedback. |
-| `data-hide-button` | Don't show the floating button — open the widget from your own UI instead. |
+| `data-hide-button` | Don't show the floating button; open the widget from your own UI instead. |
 
 ## Your own triggers
 

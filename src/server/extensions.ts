@@ -4,7 +4,7 @@ import type { Feedback, Project } from "./db/schema";
  * Extension points for building on top of the open-source edition (e.g. a
  * hosted version with billing, plan limits or sign-ups) without forking it.
  *
- * Register implementations once at startup — see docs/extending.md.
+ * Register implementations once at startup (see docs/extending.md).
  * Throwing an `AppError` from a `before*` hook blocks the action and shows its
  * message to the user.
  */

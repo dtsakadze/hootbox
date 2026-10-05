@@ -13,7 +13,7 @@ src/
   lib/                    Isomorphic code: constants, validation (zod), formatting
   server/
     db/                   Drizzle schema + client
-    services/             Business logic. Pure functions over the database — tested directly
+    services/             Business logic. Pure functions over the database, tested directly
     functions/            createServerFn wrappers: auth + input validation → services
     http.ts               Cookies, sessions, client IP
     extensions.ts         Hooks for building on top (see extending.md)
@@ -37,11 +37,11 @@ services do the work and are unit-tested against a real database.
   tags (`text[]`), public flag/reply, vote count and a generated `tsvector` for search
 - `notes` (internal comments), `votes` (anonymous, hashed voter id)
 - `sessions` (SHA-256 of the cookie token), `invites` (SHA-256 of the token)
-- `rate_limits` — fixed-window counters in Postgres, so limits hold on serverless
+- `rate_limits`: fixed-window counters in Postgres, so limits hold on serverless
 
 ## Tests
 
-Tests hit a real Postgres database — no mocks.
+Tests hit a real Postgres database, no mocks.
 
 ```bash
 createdb hootbox_test
@@ -56,7 +56,7 @@ tables. The suite refuses to run against a database whose name doesn't contain
 ## Changing the schema
 
 1. Edit `src/server/db/schema.ts`
-2. `pnpm db:generate` — writes a new SQL migration to `drizzle/`
+2. `pnpm db:generate` writes a new SQL migration to `drizzle/`
 3. Review the SQL, then `pnpm db:migrate`
 4. Commit both
 

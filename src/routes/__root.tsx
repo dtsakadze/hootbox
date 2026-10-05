@@ -12,7 +12,7 @@ export const Route = createRootRoute({
 		meta: [
 			{ charSet: "utf-8" },
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "Hootbox — friendly feedback collection" },
+			{ title: "Hootbox: friendly feedback collection" },
 			{ name: "description", content: "Collect, organise and act on feedback from your users." },
 			{ name: "theme-color", content: "#fff8e7" },
 		],

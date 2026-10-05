@@ -143,7 +143,7 @@ export function FeedbackDetail({
 						{item.authorEmail && (
 							<a
 								className="btn btn-ghost btn-sm"
-								href={`mailto:${item.authorEmail}?subject=${encodeURIComponent(`Re: your feedback${item.title ? ` — ${item.title}` : ""}`)}`}
+								href={`mailto:${item.authorEmail}?subject=${encodeURIComponent(`Re: your feedback${item.title ? `: ${item.title}` : ""}`)}`}
 							>
 								<Mail className="size-3.5" /> Reply
 							</a>

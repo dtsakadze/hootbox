@@ -55,7 +55,7 @@ function Insights() {
 				/>
 				<Tile
 					label="Average mood"
-					value={stats.avgRating ? `${RATING_FACES[Math.round(stats.avgRating) - 1]} ${stats.avgRating.toFixed(1)}` : "—"}
+					value={stats.avgRating ? `${RATING_FACES[Math.round(stats.avgRating) - 1]} ${stats.avgRating.toFixed(1)}` : "n/a"}
 					sub={`${stats.ratingCount} rating${stats.ratingCount === 1 ? "" : "s"}`}
 					tint="bg-bubblegum-soft"
 				/>

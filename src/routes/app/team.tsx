@@ -134,7 +134,7 @@ function Team() {
 								>
 									{MEMBER_ROLES.filter((r) => r !== "owner" || team.role === "owner").map((r) => (
 										<option key={r} value={r}>
-											{r[0].toUpperCase() + r.slice(1)} — {ROLE_HELP[r]}
+											{r[0].toUpperCase() + r.slice(1)}: {ROLE_HELP[r]}
 										</option>
 									))}
 								</select>

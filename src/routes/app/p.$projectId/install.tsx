@@ -40,7 +40,7 @@ Hootbox.setMetadata({ plan: "pro", appVersion: "2.4.1" });`;
 		<div className="space-y-6">
 			<Step icon={<Code2 className="size-5" />} title="Add the widget to your site" tint="bg-violet-soft" badge="Most popular">
 				<p className="mb-3 text-sm text-ink-soft">
-					Paste this before <code className="kbd">&lt;/body&gt;</code>. A friendly feedback button appears in the corner — tweak its label,
+					Paste this before <code className="kbd">&lt;/body&gt;</code>. A friendly feedback button appears in the corner. Tweak its label,
 					position and fields in{" "}
 					{canManage ? (
 						<Link to="/app/p/$projectId/settings" params={{ projectId: project.id }} className="font-bold underline">
@@ -77,7 +77,7 @@ Hootbox.setMetadata({ plan: "pro", appVersion: "2.4.1" });`;
 					)}
 				</Step>
 				<Step icon={<Link2 className="size-5" />} title="Shareable feedback form" tint="bg-mint-soft">
-					<p className="mb-3 text-sm text-ink-soft">A standalone page — perfect for emails, QR codes, or support replies.</p>
+					<p className="mb-3 text-sm text-ink-soft">A standalone page, perfect for emails, QR codes, or support replies.</p>
 					{project.boardSubmissions ? (
 						<>
 							<LinkRow url={formUrl} />
@@ -96,7 +96,7 @@ Hootbox.setMetadata({ plan: "pro", appVersion: "2.4.1" });`;
 
 			<Step icon={<Terminal className="size-5" />} title="Send feedback from anywhere (REST API)" tint="bg-sky-soft">
 				<p className="mb-3 text-sm text-ink-soft">
-					Submit from your backend, mobile app, CLI or Zapier. The project key is public — it can only <em>create</em> feedback.
+					Submit from your backend, mobile app, CLI or Zapier. The project key is public: it can only <em>create</em> feedback.
 				</p>
 				<CodeBlock code={curl} />
 			</Step>
