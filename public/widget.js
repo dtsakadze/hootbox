@@ -1,6 +1,6 @@
 /*! Hootbox feedback widget · MIT License · https://github.com/hootbox/hootbox */
 (() => {
-	if (window.Hootbox && window.Hootbox.__loaded) return;
+	if (window.Hootbox?.__loaded) return;
 
 	const script = document.currentScript || document.querySelector("script[data-key][src*='widget.js']");
 	if (!script) return;
@@ -111,7 +111,7 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 		panel = null;
 		state.open = false;
 		if (launcher) launcher.style.display = "";
-		if (lastFocus && lastFocus.focus) lastFocus.focus();
+		if (lastFocus?.focus) lastFocus.focus();
 	}
 
 	function renderPanel() {
@@ -169,7 +169,9 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 					onclick: () => {
 						state.rating = state.rating === i + 1 ? null : i + 1;
 						faces.classList.toggle("picked", !!state.rating);
-						[...faces.children].forEach((b, j) => b.setAttribute("aria-pressed", String(state.rating === j + 1)));
+						[...faces.children].forEach((b, j) => {
+							b.setAttribute("aria-pressed", String(state.rating === j + 1));
+						});
 					},
 				}),
 			);
@@ -218,7 +220,7 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 						type: state.type,
 						message: message.value,
 						rating: state.rating,
-						email: (email && email.value) || state.identity.email || null,
+						email: email?.value || state.identity.email || null,
 						name: state.identity.name || null,
 						pageUrl: location.href.slice(0, 2048),
 						metadata: state.metadata,
@@ -300,7 +302,7 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 			lastFocus = document.activeElement;
 			load().then(
 				() => {
-					if (opts && opts.type && TYPES[opts.type]) state.type = opts.type;
+					if (opts?.type && TYPES[opts.type]) state.type = opts.type;
 					if (state.open) close();
 					state.open = true;
 					renderPanel();
@@ -311,8 +313,8 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 		close,
 		identify(user) {
 			state.identity = {
-				email: user && user.email ? String(user.email) : undefined,
-				name: user && user.name ? String(user.name) : undefined,
+				email: user?.email ? String(user.email) : undefined,
+				name: user?.name ? String(user.name) : undefined,
 			};
 		},
 		setMetadata(meta) {
@@ -327,7 +329,7 @@ textarea:focus, input:focus { border-color: #7b61ff; box-shadow: 0 0 0 4px #ebe5
 	window.Hootbox = api;
 
 	document.addEventListener("click", (e) => {
-		const trigger = e.target && e.target.closest && e.target.closest("[data-hootbox]");
+		const trigger = e.target?.closest?.("[data-hootbox]");
 		if (trigger) {
 			e.preventDefault();
 			api.open({ type: trigger.getAttribute("data-hootbox") || undefined });

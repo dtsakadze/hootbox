@@ -19,7 +19,10 @@ const reset = process.argv.includes("--reset");
 
 // Deterministic PRNG so every seed looks the same.
 let s = 42;
-const rand = () => (s = (s * 1664525 + 1013904223) % 2 ** 32) / 2 ** 32;
+const rand = () => {
+	s = (s * 1664525 + 1013904223) % 2 ** 32;
+	return s / 2 ** 32;
+};
 const pick = <T>(arr: readonly T[]) => arr[Math.floor(rand() * arr.length)];
 const chance = (p: number) => rand() < p;
 
