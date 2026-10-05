@@ -7,7 +7,16 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!**/src/routeTree.gen.ts", "!**/drizzle", "!**/.output", "!**/node_modules", "!**/src/styles.css"]
+		"includes": [
+			"**",
+			"!**/src/routeTree.gen.ts",
+			"!**/drizzle",
+			"!**/.output",
+			"!**/node_modules",
+			"!**/src/styles.css",
+			"!**/.release-please-manifest.json",
+			"!**/CHANGELOG.md"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -34,7 +43,9 @@
 	},
 	"overrides": [
 		{
-			"includes": ["tests/**"],
+			"includes": [
+				"tests/**"
+			],
 			"linter": {
 				"rules": {
 					"style": {
