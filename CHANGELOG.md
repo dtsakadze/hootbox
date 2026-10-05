@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/dtsakadze/hootbox/compare/v0.1.0...v0.1.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* plain vX.Y.Z release tags, robust version parsing for images and update checks ([d7d16d8](https://github.com/dtsakadze/hootbox/commit/d7d16d899d9eefa5a9ceec50ce64720edeafd84e))
+
 ## 0.1.0 (2026-10-05)
 
 Initial release of Hootbox, a friendly, self-hostable feedback collection platform.
