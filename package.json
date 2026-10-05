@@ -6,13 +6,20 @@
 		"#/*": "./src/*"
 	},
 	"scripts": {
-		"dev": "vite dev --port 3000",
-		"generate-routes": "tsr generate",
+		"dev": "vite dev",
 		"build": "vite build",
+		"start": "node .output/server/index.mjs",
 		"preview": "vite preview",
-		"format": "biome format",
-		"lint": "biome lint",
-		"check": "biome check"
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"lint": "biome check",
+		"format": "biome check --write",
+		"generate-routes": "tsr generate",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "tsx scripts/migrate.ts",
+		"db:seed": "tsx scripts/seed.ts",
+		"db:studio": "drizzle-kit studio"
 	},
 	"dependencies": {
 		"@fontsource-variable/bricolage-grotesque": "^5.3.0",
@@ -48,5 +55,11 @@
 			"esbuild",
 			"lightningcss"
 		]
+	},
+	"version": "0.1.0",
+	"description": "Friendly, self-hostable feedback collection: widget, public board, roadmap and inbox.",
+	"license": "MIT",
+	"engines": {
+		"node": ">=20.19"
 	}
 }

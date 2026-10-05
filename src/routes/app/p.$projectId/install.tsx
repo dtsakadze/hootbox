@@ -1,5 +1,5 @@
 import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
-import { Code2, ExternalLink, LayoutList, Link2, Megaphone, Terminal } from "lucide-react";
+import { Code2, ExternalLink, LayoutList, Link2, Megaphone, Sparkles, Terminal } from "lucide-react";
 import type { ReactNode } from "react";
 import { CodeBlock, CopyButton } from "#/components/CopyButton";
 
@@ -52,6 +52,9 @@ Hootbox.setMetadata({ plan: "pro", appVersion: "2.4.1" });`;
 					.
 				</p>
 				<CodeBlock code={snippet} />
+				<button type="button" className="btn btn-sunny mt-3" onClick={() => previewWidget(project.publicKey)}>
+					<Sparkles className="size-4" /> Preview the widget here
+				</button>
 				<details className="mt-4 group">
 					<summary className="cursor-pointer text-sm font-extrabold">Custom triggers & JavaScript API</summary>
 					<div className="mt-3">
@@ -113,6 +116,23 @@ Hootbox.setMetadata({ plan: "pro", appVersion: "2.4.1" });`;
 			</Step>
 		</div>
 	);
+}
+
+declare global {
+	interface Window {
+		Hootbox?: { open: (opts?: { type?: string }) => void };
+	}
+}
+
+/** Loads the real widget into the dashboard so admins can try it out. */
+function previewWidget(key: string) {
+	if (window.Hootbox) return window.Hootbox.open();
+	const s = document.createElement("script");
+	s.src = "/widget.js";
+	s.dataset.key = key;
+	s.setAttribute("data-hide-button", "");
+	s.onload = () => window.Hootbox?.open();
+	document.body.appendChild(s);
 }
 
 function Step({
