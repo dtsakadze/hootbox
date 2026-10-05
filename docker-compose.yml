@@ -1,0 +1,31 @@
+# One-command self-hosting:  docker compose up -d   →  http://localhost:3000
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://hootbox:${POSTGRES_PASSWORD:-hootbox}@db:5432/hootbox
+      # APP_URL: https://feedback.example.com
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hootbox
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hootbox}
+      POSTGRES_DB: hootbox
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hootbox"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
