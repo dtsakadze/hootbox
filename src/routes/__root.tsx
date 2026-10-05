@@ -30,7 +30,8 @@ function RootDocument({ children }: { children: ReactNode }) {
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			{/* Browser extensions (e.g. Grammarly) add attributes to <body>; ignore those diffs. */}
+			<body suppressHydrationWarning>
 				<ToastProvider>{children}</ToastProvider>
 				<Scripts />
 			</body>
