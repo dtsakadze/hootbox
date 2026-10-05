@@ -9,7 +9,7 @@ serverless platforms.
 | Variable                 | Required | Description |
 | ------------------------ | -------- | ----------- |
 | `DATABASE_URL`           | ✅       | Postgres connection string. |
-| `APP_URL`                |          | Public URL, e.g. `https://feedback.example.com`. Used in widget snippets, invite links and webhook messages. Defaults to the request's origin. |
+| `APP_URL`                | recommended | Public URL, e.g. `https://feedback.example.com`. Used in widget snippets and invite links (defaults to the request origin), and **required for "open in Hootbox" links in webhook notifications** — those are never built from request headers, which anonymous submitters control. |
 | `DATABASE_POOL_MAX`      |          | Connections per server instance (default `10`). Use `1`–`3` on serverless. |
 | `DATABASE_PREPARE`       |          | Set `false` behind transaction-mode poolers (PgBouncer, Supabase pooler, Neon pooled URL, Cloudflare Hyperdrive). |
 | `TRUST_PROXY`            |          | Defaults to `true` (client IP taken from `X-Forwarded-For`). Set `false` if Hootbox faces the internet **without** a reverse proxy, so the header can't be spoofed to dodge rate limits. |

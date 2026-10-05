@@ -21,8 +21,9 @@ export const getProjectFn = createServerFn({ method: "GET" })
 		return {
 			project: {
 				...project,
-				// Only admins see secrets.
+				// Only admins see secrets (a Slack/Discord webhook URL is one, too).
 				webhookSecret: canManage ? project.webhookSecret : "",
+				webhookUrl: canManage ? project.webhookUrl : null,
 			},
 			role,
 			canManage,

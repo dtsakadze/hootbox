@@ -24,3 +24,21 @@ export class AppError extends Error {
 
 export const notFound = (what = "Not found") => new AppError("NOT_FOUND", what);
 export const forbidden = (msg = "You don't have access to this") => new AppError("FORBIDDEN", msg);
+
+/** True for Postgres unique-constraint violations (also when wrapped by Drizzle). */
+export function isUniqueViolation(err: unknown): boolean {
+	for (let e = err as { code?: string; cause?: unknown } | undefined, i = 0; e && i < 3; e = e.cause as typeof e, i++) {
+		if (e.code === "23505") return true;
+	}
+	return false;
+}
+
+/** Runs `fn`, turning a unique violation into a friendly CONFLICT error. */
+export async function withConflictMessage<T>(fn: () => Promise<T>, message: string): Promise<T> {
+	try {
+		return await fn();
+	} catch (err) {
+		if (isUniqueViolation(err)) throw new AppError("CONFLICT", message);
+		throw err;
+	}
+}

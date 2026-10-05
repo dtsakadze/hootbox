@@ -20,8 +20,17 @@ export function clientIp() {
 	return getRequestIP({ xForwardedFor: process.env.TRUST_PROXY !== "false" }) ?? null;
 }
 
+/**
+ * Metadata for public (unauthenticated) submissions. Notification links use only
+ * the configured APP_URL: the Host header of an anonymous request is attacker
+ * controlled and must never end up in messages sent to the team.
+ */
 export function requestMeta() {
-	return { ip: clientIp(), userAgent: getRequestHeader("user-agent") ?? null, appUrl: appUrl() };
+	return {
+		ip: clientIp(),
+		userAgent: getRequestHeader("user-agent") ?? null,
+		appUrl: process.env.APP_URL?.replace(/\/$/, "") || undefined,
+	};
 }
 
 export async function startSession(userId: string) {

@@ -5,7 +5,7 @@ import { getDb } from "../db/client";
 import { sessions, type User, users, workspaceMembers, workspaces } from "../db/schema";
 import { extensions } from "../extensions";
 import { newId, randomToken, sha256 } from "../lib/crypto";
-import { AppError } from "../lib/errors";
+import { AppError, withConflictMessage } from "../lib/errors";
 import { hashPassword, verifyPassword } from "../lib/password";
 
 export const SESSION_TTL_DAYS = 30;
@@ -45,14 +45,19 @@ export async function setupInstance(input: z.output<typeof setupSchema>) {
 export async function signUp(input: z.output<typeof setupSchema>) {
 	if (!extensions().allowOpenSignup) throw new AppError("FORBIDDEN", "Sign-ups are invite-only on this Hootbox.");
 	const passwordHash = await hashPassword(input.password);
-	return getDb().transaction(async (tx) => {
-		const [existing] = await tx.select({ id: users.id }).from(users).where(eq(users.email, input.email)).limit(1);
-		if (existing) throw new AppError("CONFLICT", "An account with that email already exists. Log in instead.");
-		const [user] = await tx.insert(users).values({ id: newId(), email: input.email, name: input.name, passwordHash }).returning();
-		const [workspace] = await tx.insert(workspaces).values({ id: newId(), name: input.workspaceName }).returning();
-		await tx.insert(workspaceMembers).values({ workspaceId: workspace.id, userId: user.id, role: "owner" });
-		return { user: toPublicUser(user), workspace };
-	});
+	const conflict = "An account with that email already exists. Log in instead.";
+	return withConflictMessage(
+		() =>
+			getDb().transaction(async (tx) => {
+				const [existing] = await tx.select({ id: users.id }).from(users).where(eq(users.email, input.email)).limit(1);
+				if (existing) throw new AppError("CONFLICT", conflict);
+				const [user] = await tx.insert(users).values({ id: newId(), email: input.email, name: input.name, passwordHash }).returning();
+				const [workspace] = await tx.insert(workspaces).values({ id: newId(), name: input.workspaceName }).returning();
+				await tx.insert(workspaceMembers).values({ workspaceId: workspace.id, userId: user.id, role: "owner" });
+				return { user: toPublicUser(user), workspace };
+			}),
+		conflict,
+	);
 }
 
 // Used to keep login timing similar whether or not the email exists.
@@ -77,6 +82,8 @@ export async function createSession(userId: string) {
 	await getDb()
 		.insert(sessions)
 		.values({ id: await sha256(token), userId, expiresAt });
+	// Opportunistic housekeeping; no cron needed.
+	if (Math.random() < 0.05) await purgeExpiredSessions();
 	return { token, expiresAt };
 }
 
@@ -124,7 +131,10 @@ export async function updateProfile(userId: string, input: { name: string; email
 		.where(and(eq(users.email, input.email), sql`${users.id} <> ${userId}`))
 		.limit(1);
 	if (clash) throw new AppError("CONFLICT", "That email is already used by another account.");
-	const [user] = await db.update(users).set(input).where(eq(users.id, userId)).returning();
+	const [user] = await withConflictMessage(
+		() => db.update(users).set(input).where(eq(users.id, userId)).returning(),
+		"That email is already used by another account.",
+	);
 	return toPublicUser(user);
 }
 

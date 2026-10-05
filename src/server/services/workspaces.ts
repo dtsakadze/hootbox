@@ -4,7 +4,7 @@ import { getDb } from "../db/client";
 import { invites, users, type Workspace, workspaceMembers, workspaces } from "../db/schema";
 import { extensions } from "../extensions";
 import { newId, randomToken, sha256 } from "../lib/crypto";
-import { AppError, forbidden, notFound } from "../lib/errors";
+import { AppError, forbidden, notFound, withConflictMessage } from "../lib/errors";
 import { hashPassword } from "../lib/password";
 
 const RANK: Record<MemberRole, number> = { member: 1, admin: 2, owner: 3 };
@@ -189,28 +189,33 @@ export async function acceptInvite(input: { token: string; name: string; email: 
 	await extensions().beforeMemberJoin?.({ workspaceId: found.invite.workspaceId });
 	const passwordHash = await hashPassword(input.password);
 
-	return getDb().transaction(async (tx) => {
-		// Claim the invite atomically so it can't be used twice.
-		const claimed = await tx
-			.update(invites)
-			.set({ acceptedAt: new Date() })
-			.where(and(eq(invites.id, found.invite.id), isNull(invites.acceptedAt)))
-			.returning({ id: invites.id });
-		if (claimed.length === 0) throw new AppError("NOT_FOUND", "This invite link has already been used.");
+	const conflict = "An account with that email already exists. Log in instead.";
+	return withConflictMessage(
+		() =>
+			getDb().transaction(async (tx) => {
+				// Claim the invite atomically so it can't be used twice.
+				const claimed = await tx
+					.update(invites)
+					.set({ acceptedAt: new Date() })
+					.where(and(eq(invites.id, found.invite.id), isNull(invites.acceptedAt)))
+					.returning({ id: invites.id });
+				if (claimed.length === 0) throw new AppError("NOT_FOUND", "This invite link has already been used.");
 
-		const [existing] = await tx.select({ id: users.id }).from(users).where(eq(users.email, input.email));
-		if (existing) {
-			throw new AppError("CONFLICT", "An account with that email already exists. Log in instead.");
-		}
-		const [user] = await tx
-			.insert(users)
-			.values({ id: newId(), email: input.email, name: input.name, passwordHash })
-			.returning({ id: users.id, email: users.email, name: users.name });
-		await tx.insert(workspaceMembers).values({
-			workspaceId: found.invite.workspaceId,
-			userId: user.id,
-			role: found.invite.role,
-		});
-		return user;
-	});
+				const [existing] = await tx.select({ id: users.id }).from(users).where(eq(users.email, input.email));
+				if (existing) {
+					throw new AppError("CONFLICT", conflict);
+				}
+				const [user] = await tx
+					.insert(users)
+					.values({ id: newId(), email: input.email, name: input.name, passwordHash })
+					.returning({ id: users.id, email: users.email, name: users.name });
+				await tx.insert(workspaceMembers).values({
+					workspaceId: found.invite.workspaceId,
+					userId: user.id,
+					role: found.invite.role,
+				});
+				return user;
+			}),
+		conflict,
+	);
 }

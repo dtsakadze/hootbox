@@ -1,4 +1,4 @@
-import { createFileRoute, Link, stripSearchParams, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, getRouteApi, Link, stripSearchParams, useNavigate, useRouter } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Download, Heart, Search, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
@@ -9,6 +9,8 @@ import { FEEDBACK_STATUSES, FEEDBACK_TYPES, type FeedbackStatus } from "#/lib/co
 import { RATING_FACES, STATUS_META, TYPE_META, timeAgo } from "#/lib/meta";
 import { feedbackFiltersSchema } from "#/lib/validation";
 import { bulkStatusFn, deleteFeedbackFn, getFeedbackFn, listFeedbackFn } from "#/server/functions/feedback";
+
+const projectRoute = getRouteApi("/app/p/$projectId");
 
 const searchSchema = feedbackFiltersSchema.extend({ id: z.string().max(64).optional().catch(undefined) });
 
@@ -36,6 +38,7 @@ function Inbox() {
 	const { list, detail } = Route.useLoaderData();
 	const search = Route.useSearch();
 	const { projectId } = Route.useParams();
+	const { canManage } = projectRoute.useLoaderData();
 	const navigate = useNavigate({ from: Route.fullPath });
 	const router = useRouter();
 	const toast = useToast();
@@ -172,9 +175,11 @@ function Inbox() {
 								</option>
 							))}
 						</select>
-						<Button variant="danger" size="sm" onClick={() => bulk("delete")} loading={busy}>
-							<Trash2 className="size-3.5" /> Delete
-						</Button>
+						{canManage && (
+							<Button variant="danger" size="sm" onClick={() => bulk("delete")} loading={busy}>
+								<Trash2 className="size-3.5" /> Delete
+							</Button>
+						)}
 						<button type="button" className="ml-auto btn btn-quiet btn-sm" onClick={() => setSelected(new Set())}>
 							Clear
 						</button>
@@ -307,6 +312,7 @@ function Inbox() {
 								key={detail.id}
 								item={detail}
 								projectId={projectId}
+								canDelete={canManage}
 								onClose={() => navigate({ search: (p) => ({ ...p, id: undefined }) })}
 							/>
 						) : (

@@ -124,3 +124,16 @@ describe("open sign-up", () => {
 		await expect(signUp(input)).rejects.toThrow(/already exists/);
 	});
 });
+
+describe("conflicts", () => {
+	it("maps racing sign-ups with the same email to a friendly error", async () => {
+		const { signUp } = await import("#/server/services/auth");
+		const { registerExtensions } = await import("#/server/extensions");
+		await seedOwner();
+		registerExtensions({ allowOpenSignup: true });
+		const input = { name: "Racer", email: "race@example.com", password: "password123", workspaceName: "R" };
+		const results = await Promise.allSettled([signUp(input), signUp(input), signUp(input)]);
+		expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+		for (const r of results) if (r.status === "rejected") expect(String(r.reason)).toMatch(/already exists/);
+	});
+});

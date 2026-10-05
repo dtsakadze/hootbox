@@ -14,7 +14,17 @@ type Patch = z.input<typeof updateFeedbackSchema>;
 
 const SOURCE_LABEL = { widget: "Widget", board: "Public board", form: "Feedback form", api: "API" } as const;
 
-export function FeedbackDetail({ item, projectId, onClose }: { item: Item; projectId: string; onClose: () => void }) {
+export function FeedbackDetail({
+	item,
+	projectId,
+	canDelete,
+	onClose,
+}: {
+	item: Item;
+	projectId: string;
+	canDelete: boolean;
+	onClose: () => void;
+}) {
 	const router = useRouter();
 	const toast = useToast();
 	const [reply, setReply] = useState(item.publicReply ?? "");
@@ -308,11 +318,13 @@ export function FeedbackDetail({ item, projectId, onClose }: { item: Item; proje
 					</form>
 				</Section>
 
-				<div className="flex justify-end border-t-2 border-dashed border-ink/15 pt-4">
-					<Button variant="quiet" size="sm" onClick={remove} className="text-tomato">
-						<Trash2 className="size-3.5" /> Delete feedback
-					</Button>
-				</div>
+				{canDelete && (
+					<div className="flex justify-end border-t-2 border-dashed border-ink/15 pt-4">
+						<Button variant="quiet" size="sm" onClick={remove} className="text-tomato">
+							<Trash2 className="size-3.5" /> Delete feedback
+						</Button>
+					</div>
+				)}
 			</div>
 		</article>
 	);

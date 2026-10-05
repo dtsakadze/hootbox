@@ -14,6 +14,7 @@ import {
 	updateFeedback,
 } from "../services/feedback";
 import { getProjectForUser } from "../services/projects";
+import { assertRole } from "../services/workspaces";
 import { authMiddleware } from "./middleware";
 import { validate } from "./validate";
 
@@ -61,7 +62,8 @@ export const deleteFeedbackFn = createServerFn({ method: "POST" })
 	.middleware([authMiddleware])
 	.validator(validate(z.object({ projectId: id, ids })))
 	.handler(async ({ data, context }) => {
-		await getProjectForUser(context.auth.user.id, data.projectId);
+		const { role } = await getProjectForUser(context.auth.user.id, data.projectId);
+		assertRole(role, "admin");
 		return { deleted: await deleteFeedback(data.projectId, data.ids) };
 	});
 
