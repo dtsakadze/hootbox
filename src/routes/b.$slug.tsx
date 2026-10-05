@@ -139,7 +139,7 @@ function VoteButton({ post }: { post: Post }) {
 			disabled={pending}
 			aria-pressed={state.voted}
 			aria-label={state.voted ? "Remove vote" : "Upvote"}
-			className={`flex w-14 shrink-0 flex-col items-center rounded-2xl border-2 border-ink py-1.5 font-extrabold transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0.5 ${state.voted ? "bg-sunny shadow-pop-sm" : "bg-paper"}`}
+			className={`flex w-14 shrink-0 flex-col items-center self-start rounded-2xl border-2 border-ink py-1.5 font-extrabold transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0.5 ${state.voted ? "bg-sunny shadow-pop-sm" : "bg-paper"}`}
 		>
 			<ArrowBigUp className={`size-6 ${state.voted ? "fill-ink" : ""}`} />
 			<span className="tabular-nums">{state.count}</span>

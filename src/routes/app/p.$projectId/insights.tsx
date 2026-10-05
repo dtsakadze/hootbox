@@ -49,7 +49,7 @@ function Insights() {
 					sub={
 						<span className="inline-flex items-center gap-0.5">
 							{delta >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
-							{Math.abs(delta)} vs previous week
+							{delta === 0 ? "same as the week before" : `${Math.abs(delta)} ${delta > 0 ? "more" : "fewer"} than the week before`}
 						</span>
 					}
 				/>

@@ -80,7 +80,7 @@ export function PublicFeedbackForm({ slug, source, types, askEmail, thankYouMess
 	}
 
 	return (
-		<form onSubmit={onSubmit} className="space-y-4">
+		<form onSubmit={onSubmit} className="@container space-y-4">
 			<ErrorNote>{error}</ErrorNote>
 			{types.length > 1 && (
 				<fieldset>
@@ -138,7 +138,7 @@ export function PublicFeedbackForm({ slug, source, types, askEmail, thankYouMess
 				</div>
 			</fieldset>
 			{askEmail !== "hidden" && (
-				<div className="grid gap-3 sm:grid-cols-2">
+				<div className="grid gap-3 @md:grid-cols-2">
 					<input
 						name="name"
 						className="input"
