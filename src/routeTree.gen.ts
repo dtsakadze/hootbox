@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppAccountRouteImport } from './routes/app/account'
@@ -48,6 +49,11 @@ const LoginRoute = LoginRouteImport.update({
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/signup': typeof SignupRoute
   '/api/health': typeof ApiHealthRoute
   '/app/account': typeof AppAccountRoute
   '/app/new': typeof AppNewRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/signup': typeof SignupRoute
   '/api/health': typeof ApiHealthRoute
   '/app/account': typeof AppAccountRoute
   '/app/new': typeof AppNewRoute
@@ -180,6 +188,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/signup': typeof SignupRoute
   '/api/health': typeof ApiHealthRoute
   '/app/account': typeof AppAccountRoute
   '/app/new': typeof AppNewRoute
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/setup'
+    | '/signup'
     | '/api/health'
     | '/app/account'
     | '/app/new'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/setup'
+    | '/signup'
     | '/api/health'
     | '/app/account'
     | '/app/new'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/setup'
+    | '/signup'
     | '/api/health'
     | '/app/account'
     | '/app/new'
@@ -269,6 +281,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   SetupRoute: typeof SetupRoute
+  SignupRoute: typeof SignupRoute
   ApiHealthRoute: typeof ApiHealthRoute
   BSlugRoute: typeof BSlugRoute
   FSlugRoute: typeof FSlugRoute
@@ -306,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/health': {
@@ -464,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   SetupRoute: SetupRoute,
+  SignupRoute: SignupRoute,
   ApiHealthRoute: ApiHealthRoute,
   BSlugRoute: BSlugRoute,
   FSlugRoute: FSlugRoute,

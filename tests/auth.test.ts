@@ -109,3 +109,18 @@ describe("account", () => {
 		await expect(updateProfile(bob.id, { name: "Bobby", email: "bobby@example.com" })).resolves.toMatchObject({ name: "Bobby" });
 	});
 });
+
+describe("open sign-up", () => {
+	it("is disabled unless an extension enables it", async () => {
+		const { signUp } = await import("#/server/services/auth");
+		const { registerExtensions } = await import("#/server/extensions");
+		await seedOwner();
+		const input = { name: "New", email: "new@example.com", password: "password123", workspaceName: "New Co" };
+		await expect(signUp(input)).rejects.toThrow(/invite-only/);
+
+		registerExtensions({ allowOpenSignup: true });
+		const { user, workspace } = await signUp(input);
+		expect(await getMembership(user.id)).toMatchObject({ role: "owner", workspace: { id: workspace.id } });
+		await expect(signUp(input)).rejects.toThrow(/already exists/);
+	});
+});

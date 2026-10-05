@@ -3,6 +3,7 @@ import type { z } from "zod";
 import type { setupSchema } from "#/lib/validation";
 import { getDb } from "../db/client";
 import { sessions, type User, users, workspaceMembers, workspaces } from "../db/schema";
+import { extensions } from "../extensions";
 import { newId, randomToken, sha256 } from "../lib/crypto";
 import { AppError } from "../lib/errors";
 import { hashPassword, verifyPassword } from "../lib/password";
@@ -30,6 +31,23 @@ export async function setupInstance(input: z.output<typeof setupSchema>) {
 		const [existing] = await tx.select({ id: users.id }).from(users).limit(1);
 		if (existing) throw new AppError("FORBIDDEN", "This Hootbox is already set up. Please log in.");
 
+		const [user] = await tx.insert(users).values({ id: newId(), email: input.email, name: input.name, passwordHash }).returning();
+		const [workspace] = await tx.insert(workspaces).values({ id: newId(), name: input.workspaceName }).returning();
+		await tx.insert(workspaceMembers).values({ workspaceId: workspace.id, userId: user.id, role: "owner" });
+		return { user: toPublicUser(user), workspace };
+	});
+}
+
+/**
+ * Self-serve sign-up: a new user with their own workspace. Disabled in the OSS
+ * edition (invite-only); an extension can enable it via `allowOpenSignup`.
+ */
+export async function signUp(input: z.output<typeof setupSchema>) {
+	if (!extensions().allowOpenSignup) throw new AppError("FORBIDDEN", "Sign-ups are invite-only on this Hootbox.");
+	const passwordHash = await hashPassword(input.password);
+	return getDb().transaction(async (tx) => {
+		const [existing] = await tx.select({ id: users.id }).from(users).where(eq(users.email, input.email)).limit(1);
+		if (existing) throw new AppError("CONFLICT", "An account with that email already exists. Log in instead.");
 		const [user] = await tx.insert(users).values({ id: newId(), email: input.email, name: input.name, passwordHash }).returning();
 		const [workspace] = await tx.insert(workspaces).values({ id: newId(), name: input.workspaceName }).returning();
 		await tx.insert(workspaceMembers).values({ workspaceId: workspace.id, userId: user.id, role: "owner" });

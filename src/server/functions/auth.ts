@@ -1,9 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { acceptInviteSchema, emailSchema, loginSchema, nameSchema, passwordSchema, setupSchema } from "#/lib/validation";
+import { extensions } from "../extensions";
 import { clientIp, currentUser, endSession, startSession } from "../http";
 import { sha256 } from "../lib/crypto";
-import { authenticate, changePassword, isSetupComplete, setupInstance, updateProfile } from "../services/auth";
+import { authenticate, changePassword, isSetupComplete, setupInstance, signUp, updateProfile } from "../services/auth";
 import { enforceRateLimit } from "../services/rate-limit";
 import { acceptInvite, getInviteByToken, getMembership } from "../services/workspaces";
 import { authMiddleware } from "./middleware";
@@ -12,11 +13,14 @@ import { validate } from "./validate";
 /** Who's here? Used by route guards. */
 export const getSessionFn = createServerFn({ method: "GET" }).handler(async () => {
 	const auth = await currentUser();
-	if (!auth) return { user: null, setupComplete: await isSetupComplete(), workspace: null, role: null };
+	if (!auth) {
+		return { user: null, setupComplete: await isSetupComplete(), allowSignup: extensions().allowOpenSignup, workspace: null, role: null };
+	}
 	const membership = await getMembership(auth.user.id);
 	return {
 		user: auth.user,
 		setupComplete: true,
+		allowSignup: extensions().allowOpenSignup,
 		workspace: membership ? { id: membership.workspace.id, name: membership.workspace.name } : null,
 		role: membership?.role ?? null,
 	};
@@ -26,6 +30,15 @@ export const setupFn = createServerFn({ method: "POST" })
 	.validator(validate(setupSchema))
 	.handler(async ({ data }) => {
 		const { user } = await setupInstance(data);
+		await startSession(user.id);
+		return { ok: true };
+	});
+
+export const signUpFn = createServerFn({ method: "POST" })
+	.validator(validate(setupSchema))
+	.handler(async ({ data }) => {
+		await enforceRateLimit(`signup:${await sha256(clientIp() ?? "unknown")}`, 5, 3600);
+		const { user } = await signUp(data);
 		await startSession(user.id);
 		return { ok: true };
 	});
