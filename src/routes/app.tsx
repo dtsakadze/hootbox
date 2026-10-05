@@ -1,10 +1,11 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
-import { LogOut, Menu, Plus, UserRound, UsersRound, X } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpCircle, LogOut, Menu, Plus, UserRound, UsersRound, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Logo } from "#/components/Owl";
 import { colorMeta, initials } from "#/lib/meta";
 import { getSessionFn, logoutFn } from "#/server/functions/auth";
 import { listProjectsFn } from "#/server/functions/projects";
+import { getVersionFn } from "#/server/functions/team";
 
 export const Route = createFileRoute("/app")({
 	beforeLoad: async ({ location }) => {
@@ -138,7 +139,35 @@ function Sidebar({ onNavigate }: { onNavigate: () => void }) {
 						<LogOut className="size-4" />
 					</button>
 				</div>
+				<VersionInfo />
 			</div>
 		</nav>
+	);
+}
+
+/** Running version, plus a nudge for admins when a newer release exists. Loaded after paint. */
+function VersionInfo() {
+	const [info, setInfo] = useState<Awaited<ReturnType<typeof getVersionFn>> | null>(null);
+	useEffect(() => {
+		getVersionFn()
+			.then(setInfo)
+			.catch(() => {});
+	}, []);
+	if (!info) return null;
+	return (
+		<div className="px-2.5 pt-1 text-[11px] font-bold text-ink-faint">
+			{info.update ? (
+				<a
+					href={info.update.url}
+					target="_blank"
+					rel="noreferrer"
+					className="flex items-center gap-1.5 rounded-xl bg-mint-soft px-2 py-1.5 text-ink hover:bg-mint"
+				>
+					<ArrowUpCircle className="size-3.5" /> Update available: v{info.update.version}
+				</a>
+			) : (
+				<span>Hootbox v{info.current}</span>
+			)}
+		</div>
 	);
 }

@@ -28,6 +28,12 @@ Before committing: `pnpm typecheck && pnpm lint && pnpm test` must all pass.
 
 TanStack Start (React 19, SSR, file-based routes) on Nitro, PostgreSQL via Drizzle ORM + postgres.js, Tailwind CSS v4, zod v4, Vitest, Biome. Package manager: pnpm.
 
+## Commits and releases
+
+- Use Conventional Commits (`feat:`, `fix:`, `perf:`, `docs:`, `chore:`, `refactor:`, `test:`). They drive versioning: release-please turns `feat` into a minor bump and `fix` into a patch, and writes CHANGELOG.md from them. Mark breaking changes with `feat!:` or a `BREAKING CHANGE:` footer.
+- Never edit the version in `package.json` or `CHANGELOG.md` by hand; release-please does it in its release PR.
+- Releases: merging the release PR tags `vX.Y.Z`, creates the GitHub Release and publishes `ghcr.io/dtsakadze/hootbox` (see `.github/workflows/release.yml`).
+
 ## Architecture rules
 
 - **Layers:** routes → server functions (`src/server/functions/`) → services (`src/server/services/`). Server functions only do auth, access checks and input validation, then call a service. Business logic lives in services, never in routes or components.

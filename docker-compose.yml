@@ -1,7 +1,10 @@
-# One-command self-hosting:  docker compose up -d   →  http://localhost:3000
+# One-command self-hosting:  docker compose up -d   ->  http://localhost:3000
+# Update:                    docker compose pull && docker compose up -d
 services:
   app:
-    build: .
+    # Pin a version for fewer surprises, e.g. ghcr.io/dtsakadze/hootbox:0.1
+    image: ghcr.io/dtsakadze/hootbox:latest
+    # To build from source instead, replace the line above with:  build: .
     restart: unless-stopped
     ports:
       - "3000:3000"

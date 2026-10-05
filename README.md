@@ -30,11 +30,13 @@ A widget for your site, a public board with voting and a roadmap, and a cosy inb
 ### Docker (recommended for self-hosting)
 
 ```bash
-git clone https://github.com/dtsakadze/hootbox.git && cd hootbox
+mkdir hootbox && cd hootbox
+curl -fsSLO https://raw.githubusercontent.com/dtsakadze/hootbox/main/docker-compose.yml
 docker compose up -d
 ```
 
 Open <http://localhost:3000> and create your owner account. That's it.
+To update later: `docker compose pull && docker compose up -d` ([more on upgrading](docs/self-hosting.md#upgrading)).
 For production setups (custom domain, Vercel, Cloudflare, managed Postgres) see **[docs/self-hosting.md](docs/self-hosting.md)**.
 
 ### Local development

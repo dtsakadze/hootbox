@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { roleSchema } from "#/lib/validation";
+import { APP_VERSION } from "#/lib/version";
 import { appUrl } from "../http";
+import { availableUpdate } from "../services/updates";
 import {
 	assertRole,
 	createInvite,
@@ -63,3 +65,11 @@ export const removeMemberFn = createServerFn({ method: "POST" })
 		await removeMember(context.auth.actor, context.auth.workspace.id, data.userId);
 		return { ok: true, left: data.userId === context.auth.user.id };
 	});
+
+/** Version info for the sidebar; only admins are told about available updates. */
+export const getVersionFn = createServerFn({ method: "GET" })
+	.middleware([authMiddleware])
+	.handler(async ({ context }) => ({
+		current: APP_VERSION,
+		update: context.auth.role === "member" ? null : await availableUpdate(APP_VERSION),
+	}));
