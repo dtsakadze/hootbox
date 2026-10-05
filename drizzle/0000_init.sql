@@ -58,6 +58,7 @@ CREATE TABLE "projects" (
 	"allowed_origins" text[] DEFAULT '{}'::text[] NOT NULL,
 	"webhook_url" text,
 	"webhook_secret" text NOT NULL,
+	"feedback_seq" integer DEFAULT 0 NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

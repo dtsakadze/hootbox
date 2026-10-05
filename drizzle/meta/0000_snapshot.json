@@ -1,5 +1,5 @@
 {
-  "id": "893f7961-e5b3-497a-9364-78d28ae80955",
+  "id": "e7e6b9be-2b98-4117-81b3-041366985db3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -592,6 +592,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "feedback_seq": {
+          "name": "feedback_seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",

@@ -20,30 +20,15 @@ const tsvector = customType<{ data: string }>({
 const createdAt = () =>
 	timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
-export const FEEDBACK_TYPES = [
-	"idea",
-	"bug",
-	"praise",
-	"question",
-	"other",
-] as const;
-export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
+import {
+	FEEDBACK_SOURCES,
+	FEEDBACK_STATUSES,
+	FEEDBACK_TYPES,
+	type FeedbackType,
+	MEMBER_ROLES,
+} from "#/lib/constants";
 
-export const FEEDBACK_STATUSES = [
-	"new",
-	"reviewing",
-	"planned",
-	"in_progress",
-	"done",
-	"closed",
-] as const;
-export type FeedbackStatus = (typeof FEEDBACK_STATUSES)[number];
-
-export const FEEDBACK_SOURCES = ["widget", "board", "form", "api"] as const;
-export type FeedbackSource = (typeof FEEDBACK_SOURCES)[number];
-
-export const MEMBER_ROLES = ["owner", "admin", "member"] as const;
-export type MemberRole = (typeof MEMBER_ROLES)[number];
+export * from "#/lib/constants";
 
 export const users = pgTable("users", {
 	id: text("id").primaryKey(),
@@ -150,6 +135,8 @@ export const projects = pgTable(
 			.default(sql`'{}'::text[]`),
 		webhookUrl: text("webhook_url"),
 		webhookSecret: text("webhook_secret").notNull(),
+		/** Last assigned feedback number; bumped atomically on insert. */
+		feedbackSeq: integer("feedback_seq").notNull().default(0),
 		createdAt: createdAt(),
 	},
 	(t) => [
