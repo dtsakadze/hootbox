@@ -107,7 +107,13 @@ export const updateProjectSchema = z.object({
 });
 
 const metadataSchema = z
-	.record(z.string().max(40), z.union([z.string().max(500), z.number(), z.boolean(), z.null()]))
+	.record(
+		z
+			.string()
+			.regex(/^[A-Za-z0-9_.-]{1,40}$/, "Metadata keys may only contain letters, numbers, _ . and -")
+			.refine((k) => !["__proto__", "constructor", "prototype"].includes(k), "Reserved metadata key"),
+		z.union([z.string().max(500), z.number(), z.boolean(), z.null()]),
+	)
 	.refine((m) => Object.keys(m).length <= LIMITS.metadataKeys, "Too many metadata keys")
 	.default({});
 

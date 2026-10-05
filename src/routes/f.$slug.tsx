@@ -6,7 +6,8 @@ import { REPO_URL } from "#/lib/constants-app";
 import { getFormFn } from "#/server/functions/public";
 
 export const Route = createFileRoute("/f/$slug")({
-	validateSearch: z.object({ embed: z.coerce.boolean().optional().catch(false) }),
+	// Kept as-is (no transform) so the router doesn't redirect to normalise the URL.
+	validateSearch: z.object({ embed: z.unknown().optional() }),
 	loader: async ({ params }) => {
 		const form = await getFormFn({ data: { slug: params.slug } });
 		if (!form) throw notFound();
@@ -20,7 +21,8 @@ export const Route = createFileRoute("/f/$slug")({
 
 function FormPage() {
 	const { project } = Route.useLoaderData();
-	const { embed } = Route.useSearch();
+	const { embed: embedParam } = Route.useSearch();
+	const embed = embedParam === 1 || embedParam === true || embedParam === "1" || embedParam === "true";
 
 	const form = (
 		<PublicFeedbackForm

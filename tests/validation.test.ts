@@ -30,6 +30,13 @@ describe("submitFeedbackSchema", () => {
 		});
 	});
 
+	it("only accepts safe metadata keys", () => {
+		// zod drops __proto__ entirely, so it can never reach the database or a prototype.
+		expect(submitFeedbackSchema.parse({ message: "hello", metadata: JSON.parse('{"__proto__": "x", "a": 1}') }).metadata).toEqual({ a: 1 });
+		expect(submitFeedbackSchema.safeParse({ message: "hello", metadata: { "bad key!": 1 } }).success).toBe(false);
+		expect(submitFeedbackSchema.safeParse({ message: "hello", metadata: { "app.version_2-x": 1 } }).success).toBe(true);
+	});
+
 	it("only accepts ratings 1–5", () => {
 		expect(submitFeedbackSchema.safeParse({ message: "hello", rating: 6 }).success).toBe(false);
 		expect(submitFeedbackSchema.safeParse({ message: "hello", rating: 5 }).success).toBe(true);
