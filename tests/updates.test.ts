@@ -31,6 +31,12 @@ describe("fetchLatestRelease", () => {
 		expect(await fetchLatestRelease(url)).toEqual({ version: "0.3.0", url: "https://github.com/dtsakadze/hootbox/releases/tag/v0.3.0" });
 	});
 
+	it("accepts component-prefixed tags", async () => {
+		status = 200;
+		body = JSON.stringify({ tag_name: "hootbox-v0.1.0", html_url: "https://github.com/dtsakadze/hootbox/releases/tag/hootbox-v0.1.0" });
+		expect((await fetchLatestRelease(url))?.version).toBe("0.1.0");
+	});
+
 	it("rejects bad or unexpected responses", async () => {
 		body = JSON.stringify({ tag_name: "v9.9.9", html_url: "https://evil.example/x" });
 		expect(await fetchLatestRelease(url)).toBeNull();

@@ -29,7 +29,10 @@ export async function fetchLatestRelease(url = RELEASES_URL): Promise<LatestRele
 		const data = (await res.json()) as { tag_name?: unknown; html_url?: unknown };
 		if (typeof data.tag_name !== "string" || typeof data.html_url !== "string") return null;
 		if (!/^https:\/\/github\.com\//.test(data.html_url)) return null;
-		return { version: data.tag_name.replace(/^v/, ""), url: data.html_url };
+		// Accept "v1.2.3" as well as "name-v1.2.3".
+		const version = /(\d+\.\d+\.\d+)/.exec(data.tag_name)?.[1];
+		if (!version) return null;
+		return { version, url: data.html_url };
 	} catch {
 		return null;
 	}
