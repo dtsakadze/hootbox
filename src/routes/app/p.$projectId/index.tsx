@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams, useNavigate, useRouter } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Download, Heart, Search, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
@@ -14,6 +14,7 @@ const searchSchema = feedbackFiltersSchema.extend({ id: z.string().max(64).optio
 
 export const Route = createFileRoute("/app/p/$projectId/")({
 	validateSearch: searchSchema,
+	search: { middlewares: [stripSearchParams({ status: "open", sort: "newest", page: 1 })] },
 	loaderDeps: ({ search }) => search,
 	loader: async ({ params, deps: { id, ...filters } }) => {
 		const [list, detail] = await Promise.all([

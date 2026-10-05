@@ -30,7 +30,7 @@ export const getBoardFn = createServerFn({ method: "GET" })
 	.validator(validate(z.object({ slug, sort: z.enum(["top", "new"]).catch("top").default("top") })))
 	.handler(async ({ data }) => {
 		const project = await getProjectBySlug(data.slug);
-		if (!project || !project.boardEnabled) throw notFound("This board doesn't exist (or is private).");
+		if (!project || !project.boardEnabled) return null;
 		const posts = await listPublicPosts(project.id, { sort: data.sort, voterId: await voterId(false) });
 		return { project: publicProject(project), posts };
 	});
@@ -39,7 +39,7 @@ export const getFormFn = createServerFn({ method: "GET" })
 	.validator(validate(z.object({ slug })))
 	.handler(async ({ data }) => {
 		const project = await getProjectBySlug(data.slug);
-		if (!project || !project.boardSubmissions) throw notFound("This form doesn't exist (or is closed).");
+		if (!project || !project.boardSubmissions) return null;
 		return { project: publicProject(project) };
 	});
 

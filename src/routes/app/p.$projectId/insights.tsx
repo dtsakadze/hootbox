@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams, useNavigate } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight, Heart } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { z } from "zod";
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/app/p/$projectId/insights")({
 			.catch(30)
 			.default(30),
 	}),
+	search: { middlewares: [stripSearchParams({ days: 30 })] },
 	loaderDeps: ({ search }) => ({ days: search.days }),
 	loader: ({ params, deps }) => getStatsFn({ data: { projectId: params.projectId, days: deps.days } }),
 	component: Insights,

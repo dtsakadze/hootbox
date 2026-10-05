@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, notFound, stripSearchParams, useRouter } from "@tanstack/react-router";
 import { ArrowBigUp, MessageSquareReply } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
@@ -15,8 +15,13 @@ export const Route = createFileRoute("/b/$slug")({
 		view: z.enum(["ideas", "roadmap"]).catch("ideas").default("ideas"),
 		sort: z.enum(["top", "new"]).catch("top").default("top"),
 	}),
+	search: { middlewares: [stripSearchParams({ view: "ideas", sort: "top" })] },
 	loaderDeps: ({ search }) => ({ sort: search.sort }),
-	loader: ({ params, deps }) => getBoardFn({ data: { slug: params.slug, sort: deps.sort } }),
+	loader: async ({ params, deps }) => {
+		const board = await getBoardFn({ data: { slug: params.slug, sort: deps.sort } });
+		if (!board) throw notFound();
+		return board;
+	},
 	head: ({ loaderData }) => ({
 		meta: loaderData
 			? [
@@ -32,7 +37,7 @@ export const Route = createFileRoute("/b/$slug")({
 	component: Board,
 });
 
-type Post = Awaited<ReturnType<typeof getBoardFn>>["posts"][number];
+type Post = NonNullable<Awaited<ReturnType<typeof getBoardFn>>>["posts"][number];
 
 function Board() {
 	const { project, posts } = Route.useLoaderData();

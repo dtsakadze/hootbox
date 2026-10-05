@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { Owl } from "#/components/Owl";
 import { PublicFeedbackForm } from "#/components/PublicFeedbackForm";
@@ -7,7 +7,11 @@ import { getFormFn } from "#/server/functions/public";
 
 export const Route = createFileRoute("/f/$slug")({
 	validateSearch: z.object({ embed: z.coerce.boolean().optional().catch(false) }),
-	loader: ({ params }) => getFormFn({ data: { slug: params.slug } }),
+	loader: async ({ params }) => {
+		const form = await getFormFn({ data: { slug: params.slug } });
+		if (!form) throw notFound();
+		return form;
+	},
 	head: ({ loaderData }) => ({
 		meta: [{ title: loaderData ? `Feedback for ${loaderData.project.name}` : "Feedback" }],
 	}),
